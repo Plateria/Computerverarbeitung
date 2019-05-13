@@ -1,5 +1,0 @@
-﻿  ImageProcessing.cpp
-C:\CGBVRahmenprogramm\A1_Bildverarbeitung\ImageProcessing.cpp(195): warning C4244: "Argument": Konvertierung von "GLint" in "GLclampf", möglicher Datenverlust
-C:\CGBVRahmenprogramm\A1_Bildverarbeitung\ImageProcessing.cpp(198): warning C4244: "Argument": Konvertierung von "GLint" in "GLclampf", möglicher Datenverlust
-C:\CGBVRahmenprogramm\A1_Bildverarbeitung\ImageProcessing.cpp(201): warning C4244: "Argument": Konvertierung von "GLint" in "GLclampf", möglicher Datenverlust
-  A1_Bildverarbeitung.vcxproj -> C:\CGBVRahmenprogramm\build\A1_Bildverarbeitung\Debug\A1_Bildverarbeitung.exe
