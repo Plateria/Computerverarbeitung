@@ -1,0 +1,7 @@
+﻿  Building Custom Rule C:/CGBVRahmenprogramm/A3_Normalenvektoren/CMakeLists.txt
+  CMake does not need to re-run because C:/CGBVRahmenprogramm/build/A3_Normalenvektoren/CMakeFiles/generate.stamp is up-to-date.
+  Aufgabe3.cpp
+C:\CGBVRahmenprogramm\A3_Normalenvektoren\Aufgabe3.cpp(35): warning C4305: "Initialisierung": Verkürzung von "double" in "float"
+C:\CGBVRahmenprogramm\A3_Normalenvektoren\Aufgabe3.cpp(36): warning C4305: "Initialisierung": Verkürzung von "double" in "float"
+C:\CGBVRahmenprogramm\A3_Normalenvektoren\Aufgabe3.cpp(37): warning C4305: "Initialisierung": Verkürzung von "double" in "float"
+  A3_Normalenvektoren.vcxproj -> C:\CGBVRahmenprogramm\build\A3_Normalenvektoren\Debug\A3_Normalenvektoren.exe

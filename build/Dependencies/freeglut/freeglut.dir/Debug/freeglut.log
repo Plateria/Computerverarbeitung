@@ -1,0 +1,38 @@
+﻿  Building Custom Rule C:/CGBVRahmenprogramm/Dependencies/freeglut/CMakeLists.txt
+  CMake does not need to re-run because C:/CGBVRahmenprogramm/build/Dependencies/freeglut/CMakeFiles/generate.stamp is up-to-date.
+  freeglut_callbacks.c
+  freeglut_cursor.c
+  freeglut_display.c
+  freeglut_ext.c
+  freeglut_font_data.c
+  freeglut_font.c
+  freeglut_gamemode.c
+  freeglut_geometry.c
+  freeglut_glutfont_definitions.c
+  freeglut_init.c
+  freeglut_input_devices.c
+  freeglut_joystick.c
+  freeglut_main.c
+C:\CGBVRahmenprogramm\Dependencies\freeglut\src\freeglut_main.c(84): warning C4312: "Typumwandlung": Konvertierung von "unsigned int" in größeren Typ "pGetTouchInputInfo"
+C:\CGBVRahmenprogramm\Dependencies\freeglut\src\freeglut_main.c(85): warning C4312: "Typumwandlung": Konvertierung von "unsigned int" in größeren Typ "pCloseTouchInputHandle"
+C:\CGBVRahmenprogramm\Dependencies\freeglut\src\freeglut_main.c(2555): warning C4312: "Typumwandlung": Konvertierung von "unsigned int" in größeren Typ "pGetTouchInputInfo"
+  freeglut_menu.c
+  freeglut_misc.c
+  freeglut_overlay.c
+  freeglut_spaceball.c
+  freeglut_state.c
+  freeglut_stroke_mono_roman.c
+  freeglut_stroke_roman.c
+  Code wird generiert...
+  Kompilieren...
+  freeglut_structure.c
+C:\CGBVRahmenprogramm\Dependencies\freeglut\src\freeglut_structure.c(539): warning C4311: "Typumwandlung": Zeigerverkürzung von "void *" zu "int"
+C:\CGBVRahmenprogramm\Dependencies\freeglut\src\freeglut_structure.c(558): warning C4312: "Typumwandlung": Konvertierung von "int" in größeren Typ "void *"
+  freeglut_teapot.c
+  freeglut_videoresize.c
+  freeglut_window.c
+C:\CGBVRahmenprogramm\Dependencies\freeglut\src\freeglut_window.c(146): warning C4312: "Typumwandlung": Konvertierung von "unsigned int" in größeren Typ "pRegisterTouchWindow"
+  fgSetupPixelFormat(): there is still some work to do here!
+C:\CGBVRahmenprogramm\Dependencies\freeglut\src\freeglut_window.c(1451): warning C4312: "Typumwandlung": Konvertierung von "unsigned int" in größeren Typ "pRegisterTouchWindow"
+  Code wird generiert...
+  freeglut.vcxproj -> C:\CGBVRahmenprogramm\build\Dependencies\freeglut\Debug\freeglut.lib

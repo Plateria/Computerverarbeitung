@@ -1,0 +1,8 @@
+﻿  Building Custom Rule C:/CGBVRahmenprogramm/A1_Versuch1a/CMakeLists.txt
+  CMake does not need to re-run because C:/CGBVRahmenprogramm/build/A1_Versuch1a/CMakeFiles/generate.stamp is up-to-date.
+  Versuch1a.cpp
+C:\CGBVRahmenprogramm\A1_Versuch1a\Versuch1a.cpp(70): warning C4305: "Argument": Verkürzung von "double" in "GLfloat"
+C:\CGBVRahmenprogramm\A1_Versuch1a\Versuch1a.cpp(72): warning C4305: "Argument": Verkürzung von "double" in "GLfloat"
+C:\CGBVRahmenprogramm\A1_Versuch1a\Versuch1a.cpp(97): warning C4305: "Argument": Verkürzung von "double" in "GLfloat"
+C:\CGBVRahmenprogramm\A1_Versuch1a\Versuch1a.cpp(99): warning C4305: "Argument": Verkürzung von "double" in "GLfloat"
+  A1_Versuch1a.vcxproj -> C:\CGBVRahmenprogramm\build\A1_Versuch1a\Debug\A1_Versuch1a.exe

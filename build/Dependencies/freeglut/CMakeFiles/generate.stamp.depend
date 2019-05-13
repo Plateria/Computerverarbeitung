@@ -1,0 +1,5 @@
+# CMake generation dependency list for this directory.
+C:/CGBVRahmenprogramm/Dependencies/freeglut/CMakeLists.txt
+C:/Program Files/CMake/share/cmake-3.14/Modules/FindOpenGL.cmake
+C:/Program Files/CMake/share/cmake-3.14/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake/share/cmake-3.14/Modules/FindPackageMessage.cmake

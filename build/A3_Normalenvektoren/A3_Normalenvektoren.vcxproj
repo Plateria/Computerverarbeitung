@@ -1,0 +1,370 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A276B903-FCD2-389B-B9F8-4CE9753CD7B3}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>A3_Normalenvektoren</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\CGBVRahmenprogramm\build\A3_Normalenvektoren\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">A3_Normalenvektoren.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">A3_Normalenvektoren</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\CGBVRahmenprogramm\build\A3_Normalenvektoren\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">A3_Normalenvektoren.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">A3_Normalenvektoren</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\CGBVRahmenprogramm\build\A3_Normalenvektoren\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">A3_Normalenvektoren.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">A3_Normalenvektoren</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\CGBVRahmenprogramm\build\A3_Normalenvektoren\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">A3_Normalenvektoren.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">A3_Normalenvektoren</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\CGBVRahmenprogramm\Dependencies\FreeImage\Source;C:\CGBVRahmenprogramm\Dependencies\freeglut\include;C:\CGBVRahmenprogramm\Dependencies\GLTools\include;C:\CGBVRahmenprogramm\Dependencies\AntTweakBar\include;C:\CGBVRahmenprogramm\Dependencies\glew\include;C:\CGBVRahmenprogramm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;FREEIMAGE_LIB;TW_STATIC;_CRT_SECURE_NO_WARNINGS;FREEGLUT_LIB_PRAGMAS=0;FREEGLUT_STATIC;TW_NO_LIB_PRAGMA;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;FREEIMAGE_LIB;TW_STATIC;_CRT_SECURE_NO_WARNINGS;FREEGLUT_LIB_PRAGMAS=0;FREEGLUT_STATIC;TW_NO_LIB_PRAGMA;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\CGBVRahmenprogramm\Dependencies\FreeImage\Source;C:\CGBVRahmenprogramm\Dependencies\freeglut\include;C:\CGBVRahmenprogramm\Dependencies\GLTools\include;C:\CGBVRahmenprogramm\Dependencies\AntTweakBar\include;C:\CGBVRahmenprogramm\Dependencies\glew\include;C:\CGBVRahmenprogramm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\CGBVRahmenprogramm\Dependencies\FreeImage\Source;C:\CGBVRahmenprogramm\Dependencies\freeglut\include;C:\CGBVRahmenprogramm\Dependencies\GLTools\include;C:\CGBVRahmenprogramm\Dependencies\AntTweakBar\include;C:\CGBVRahmenprogramm\Dependencies\glew\include;C:\CGBVRahmenprogramm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\Dependencies\GLTools\Debug\GLTools.lib;..\Dependencies\AntTweakBar\Debug\AntTweakBar.lib;..\Dependencies\freeglut\Debug\freeglut.lib;..\ImageLoader\Debug\ImageLoader.lib;..\Dependencies\glew\Debug\glew.lib;winmm.lib;opengl32.lib;glu32.lib;..\Dependencies\FreeImage\Debug\FreeImage.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/CGBVRahmenprogramm/build/A3_Normalenvektoren/Debug/A3_Normalenvektoren.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/CGBVRahmenprogramm/build/A3_Normalenvektoren/Debug/A3_Normalenvektoren.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\CGBVRahmenprogramm\Dependencies\FreeImage\Source;C:\CGBVRahmenprogramm\Dependencies\freeglut\include;C:\CGBVRahmenprogramm\Dependencies\GLTools\include;C:\CGBVRahmenprogramm\Dependencies\AntTweakBar\include;C:\CGBVRahmenprogramm\Dependencies\glew\include;C:\CGBVRahmenprogramm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Release/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;FREEIMAGE_LIB;TW_STATIC;_CRT_SECURE_NO_WARNINGS;FREEGLUT_LIB_PRAGMAS=0;FREEGLUT_STATIC;TW_NO_LIB_PRAGMA;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;FREEIMAGE_LIB;TW_STATIC;_CRT_SECURE_NO_WARNINGS;FREEGLUT_LIB_PRAGMAS=0;FREEGLUT_STATIC;TW_NO_LIB_PRAGMA;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\CGBVRahmenprogramm\Dependencies\FreeImage\Source;C:\CGBVRahmenprogramm\Dependencies\freeglut\include;C:\CGBVRahmenprogramm\Dependencies\GLTools\include;C:\CGBVRahmenprogramm\Dependencies\AntTweakBar\include;C:\CGBVRahmenprogramm\Dependencies\glew\include;C:\CGBVRahmenprogramm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\CGBVRahmenprogramm\Dependencies\FreeImage\Source;C:\CGBVRahmenprogramm\Dependencies\freeglut\include;C:\CGBVRahmenprogramm\Dependencies\GLTools\include;C:\CGBVRahmenprogramm\Dependencies\AntTweakBar\include;C:\CGBVRahmenprogramm\Dependencies\glew\include;C:\CGBVRahmenprogramm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\Dependencies\GLTools\Release\GLTools.lib;..\Dependencies\AntTweakBar\Release\AntTweakBar.lib;..\Dependencies\freeglut\Release\freeglut.lib;..\ImageLoader\Release\ImageLoader.lib;..\Dependencies\glew\Release\glew.lib;winmm.lib;opengl32.lib;glu32.lib;..\Dependencies\FreeImage\Release\FreeImage.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/CGBVRahmenprogramm/build/A3_Normalenvektoren/Release/A3_Normalenvektoren.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/CGBVRahmenprogramm/build/A3_Normalenvektoren/Release/A3_Normalenvektoren.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\CGBVRahmenprogramm\Dependencies\FreeImage\Source;C:\CGBVRahmenprogramm\Dependencies\freeglut\include;C:\CGBVRahmenprogramm\Dependencies\GLTools\include;C:\CGBVRahmenprogramm\Dependencies\AntTweakBar\include;C:\CGBVRahmenprogramm\Dependencies\glew\include;C:\CGBVRahmenprogramm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;FREEIMAGE_LIB;TW_STATIC;_CRT_SECURE_NO_WARNINGS;FREEGLUT_LIB_PRAGMAS=0;FREEGLUT_STATIC;TW_NO_LIB_PRAGMA;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;FREEIMAGE_LIB;TW_STATIC;_CRT_SECURE_NO_WARNINGS;FREEGLUT_LIB_PRAGMAS=0;FREEGLUT_STATIC;TW_NO_LIB_PRAGMA;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\CGBVRahmenprogramm\Dependencies\FreeImage\Source;C:\CGBVRahmenprogramm\Dependencies\freeglut\include;C:\CGBVRahmenprogramm\Dependencies\GLTools\include;C:\CGBVRahmenprogramm\Dependencies\AntTweakBar\include;C:\CGBVRahmenprogramm\Dependencies\glew\include;C:\CGBVRahmenprogramm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\CGBVRahmenprogramm\Dependencies\FreeImage\Source;C:\CGBVRahmenprogramm\Dependencies\freeglut\include;C:\CGBVRahmenprogramm\Dependencies\GLTools\include;C:\CGBVRahmenprogramm\Dependencies\AntTweakBar\include;C:\CGBVRahmenprogramm\Dependencies\glew\include;C:\CGBVRahmenprogramm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\Dependencies\GLTools\MinSizeRel\GLTools.lib;..\Dependencies\AntTweakBar\MinSizeRel\AntTweakBar.lib;..\Dependencies\freeglut\MinSizeRel\freeglut.lib;..\ImageLoader\MinSizeRel\ImageLoader.lib;..\Dependencies\glew\MinSizeRel\glew.lib;winmm.lib;opengl32.lib;glu32.lib;..\Dependencies\FreeImage\MinSizeRel\FreeImage.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/CGBVRahmenprogramm/build/A3_Normalenvektoren/MinSizeRel/A3_Normalenvektoren.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/CGBVRahmenprogramm/build/A3_Normalenvektoren/MinSizeRel/A3_Normalenvektoren.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\CGBVRahmenprogramm\Dependencies\FreeImage\Source;C:\CGBVRahmenprogramm\Dependencies\freeglut\include;C:\CGBVRahmenprogramm\Dependencies\GLTools\include;C:\CGBVRahmenprogramm\Dependencies\AntTweakBar\include;C:\CGBVRahmenprogramm\Dependencies\glew\include;C:\CGBVRahmenprogramm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;FREEIMAGE_LIB;TW_STATIC;_CRT_SECURE_NO_WARNINGS;FREEGLUT_LIB_PRAGMAS=0;FREEGLUT_STATIC;TW_NO_LIB_PRAGMA;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;FREEIMAGE_LIB;TW_STATIC;_CRT_SECURE_NO_WARNINGS;FREEGLUT_LIB_PRAGMAS=0;FREEGLUT_STATIC;TW_NO_LIB_PRAGMA;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\CGBVRahmenprogramm\Dependencies\FreeImage\Source;C:\CGBVRahmenprogramm\Dependencies\freeglut\include;C:\CGBVRahmenprogramm\Dependencies\GLTools\include;C:\CGBVRahmenprogramm\Dependencies\AntTweakBar\include;C:\CGBVRahmenprogramm\Dependencies\glew\include;C:\CGBVRahmenprogramm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\CGBVRahmenprogramm\Dependencies\FreeImage\Source;C:\CGBVRahmenprogramm\Dependencies\freeglut\include;C:\CGBVRahmenprogramm\Dependencies\GLTools\include;C:\CGBVRahmenprogramm\Dependencies\AntTweakBar\include;C:\CGBVRahmenprogramm\Dependencies\glew\include;C:\CGBVRahmenprogramm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\Dependencies\GLTools\RelWithDebInfo\GLTools.lib;..\Dependencies\AntTweakBar\RelWithDebInfo\AntTweakBar.lib;..\Dependencies\freeglut\RelWithDebInfo\freeglut.lib;..\ImageLoader\RelWithDebInfo\ImageLoader.lib;..\Dependencies\glew\RelWithDebInfo\glew.lib;winmm.lib;opengl32.lib;glu32.lib;..\Dependencies\FreeImage\RelWithDebInfo\FreeImage.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/CGBVRahmenprogramm/build/A3_Normalenvektoren/RelWithDebInfo/A3_Normalenvektoren.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/CGBVRahmenprogramm/build/A3_Normalenvektoren/RelWithDebInfo/A3_Normalenvektoren.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\CGBVRahmenprogramm\A3_Normalenvektoren\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/CGBVRahmenprogramm/A3_Normalenvektoren/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/CGBVRahmenprogramm -BC:/CGBVRahmenprogramm/build --check-stamp-file C:/CGBVRahmenprogramm/build/A3_Normalenvektoren/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/CGBVRahmenprogramm/A3_Normalenvektoren/CMakeLists.txt;C:\CGBVRahmenprogramm\A3_Normalenvektoren\CMakeLists.txt;C:\CGBVRahmenprogramm\cmake\launcher-templates\targetlauncher.cmd.in;C:\CGBVRahmenprogramm\cmake\launcher-templates\vcxproj.user.in;C:\CGBVRahmenprogramm\A3_Normalenvektoren\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\CGBVRahmenprogramm\build\A3_Normalenvektoren\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/CGBVRahmenprogramm/A3_Normalenvektoren/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/CGBVRahmenprogramm -BC:/CGBVRahmenprogramm/build --check-stamp-file C:/CGBVRahmenprogramm/build/A3_Normalenvektoren/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/CGBVRahmenprogramm/A3_Normalenvektoren/CMakeLists.txt;C:\CGBVRahmenprogramm\A3_Normalenvektoren\CMakeLists.txt;C:\CGBVRahmenprogramm\cmake\launcher-templates\targetlauncher.cmd.in;C:\CGBVRahmenprogramm\cmake\launcher-templates\vcxproj.user.in;C:\CGBVRahmenprogramm\A3_Normalenvektoren\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\CGBVRahmenprogramm\build\A3_Normalenvektoren\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/CGBVRahmenprogramm/A3_Normalenvektoren/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/CGBVRahmenprogramm -BC:/CGBVRahmenprogramm/build --check-stamp-file C:/CGBVRahmenprogramm/build/A3_Normalenvektoren/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/CGBVRahmenprogramm/A3_Normalenvektoren/CMakeLists.txt;C:\CGBVRahmenprogramm\A3_Normalenvektoren\CMakeLists.txt;C:\CGBVRahmenprogramm\cmake\launcher-templates\targetlauncher.cmd.in;C:\CGBVRahmenprogramm\cmake\launcher-templates\vcxproj.user.in;C:\CGBVRahmenprogramm\A3_Normalenvektoren\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\CGBVRahmenprogramm\build\A3_Normalenvektoren\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/CGBVRahmenprogramm/A3_Normalenvektoren/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/CGBVRahmenprogramm -BC:/CGBVRahmenprogramm/build --check-stamp-file C:/CGBVRahmenprogramm/build/A3_Normalenvektoren/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/CGBVRahmenprogramm/A3_Normalenvektoren/CMakeLists.txt;C:\CGBVRahmenprogramm\A3_Normalenvektoren\CMakeLists.txt;C:\CGBVRahmenprogramm\cmake\launcher-templates\targetlauncher.cmd.in;C:\CGBVRahmenprogramm\cmake\launcher-templates\vcxproj.user.in;C:\CGBVRahmenprogramm\A3_Normalenvektoren\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\CGBVRahmenprogramm\build\A3_Normalenvektoren\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\CGBVRahmenprogramm\A3_Normalenvektoren\Aufgabe3.cpp" />
+    <None Include="C:\CGBVRahmenprogramm\A3_Normalenvektoren\VertexShader.glsl" />
+    <None Include="C:\CGBVRahmenprogramm\A3_Normalenvektoren\FragmentShader.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\CGBVRahmenprogramm\build\ZERO_CHECK.vcxproj">
+      <Project>{A9A565E8-8A89-39C7-A855-E59729C6B94B}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\CGBVRahmenprogramm\build\Dependencies\AntTweakBar\AntTweakBar.vcxproj">
+      <Project>{CB6214F8-BB12-3237-8238-849A5CAC7E26}</Project>
+      <Name>AntTweakBar</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\CGBVRahmenprogramm\build\Dependencies\FreeImage\FreeImage.vcxproj">
+      <Project>{A7E62201-0111-3BF4-8F71-C48A377D0468}</Project>
+      <Name>FreeImage</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\CGBVRahmenprogramm\build\Dependencies\GLTools\GLTools.vcxproj">
+      <Project>{7C5D4C25-ADAF-37D9-A8CC-FF99378B7E4E}</Project>
+      <Name>GLTools</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\CGBVRahmenprogramm\build\ImageLoader\ImageLoader.vcxproj">
+      <Project>{E85DF7C8-2019-3B12-AF4D-EF7533AD11F0}</Project>
+      <Name>ImageLoader</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\CGBVRahmenprogramm\build\Dependencies\freeglut\freeglut.vcxproj">
+      <Project>{C7EFE4AC-E23D-34E4-B26A-B3E555A283CC}</Project>
+      <Name>freeglut</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\CGBVRahmenprogramm\build\Dependencies\glew\glew.vcxproj">
+      <Project>{B1D72B87-C22C-3548-B7DE-3D3E10FDC7F1}</Project>
+      <Name>glew</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
