@@ -22,8 +22,6 @@ GLMatrixStack projectionMatrix;
 GLGeometryTransform transformPipeline;
 GLFrustum viewFrustum;
 
-GLBatch konus;
-GLBatch boden;
 
 
 // Definition der Kreiszahl 
@@ -51,8 +49,9 @@ void InitGUI()
 	//Hier weitere GUI Variablen anlegen. Für Farbe z.B. den Typ TW_TYPE_COLOR4F benutzen
 }
 
-void CreateGeometry()
-{
+void CreateTent() {
+
+	GLBatch konus;
 	//18 Vertices anlegen
 	M3DVector3f konusVertices[18];
 	M3DVector4f konusColors[18];
@@ -64,11 +63,11 @@ void CreateGeometry()
 	// um einen Triangle_Fan zu erzeugen
 	int iPivot = 1;
 	int i = 1;
-	for (float angle = 0.0f; angle < (2.0f*GL_PI); angle += (GL_PI / 8.0f))
+	for (float angle = 0.0f; angle < (2.0f * GL_PI); angle += (GL_PI / 8.0f))
 	{
 		// Berechne x und y Positionen des naechsten Vertex
-		float x = 50.0f*sin(angle);
-		float y = 50.0f*cos(angle);
+		float x = 50.0f * sin(angle);
+		float y = 50.0f * cos(angle);
 
 		// Alterniere die Farbe zwischen Rot und Gruen
 		if ((iPivot % 2) == 0)
@@ -88,21 +87,73 @@ void CreateGeometry()
 	konus.CopyVertexData3f(konusVertices);
 	konus.CopyColorData4f(konusColors);
 	konus.End();
+	konus.Draw();
+}
 
+void CreateQuadrat(int x, int y, int z, int offset_x, int offset_y, int offset_z) {
 
+	const int val = 8;
+	GLBatch corner;
+	M3DVector3f bodenVertices[val];
+	M3DVector4f bodenColors[val];
+	int i = 0;
+	// Das Zentrum des Triangle_Fans ist im Ursprung
+	m3dLoadVector3(bodenVertices[i], 0 + offset_x, 0 + offset_y, 0 + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0, 0, 1);
+	i++;
 
+	m3dLoadVector3(bodenVertices[i], x + offset_x, 0 + offset_y, 0 + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0.8, 0, 1);
+	i++;
+
+	m3dLoadVector3(bodenVertices[i], x + offset_x, y + offset_y, 0 + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0.8, 0.2, 1);
+	i++;
+
+	m3dLoadVector3(bodenVertices[i], 0 + offset_x, y + offset_y, 0 + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0.8, 0, 1);
+	i++;
+
+	m3dLoadVector3(bodenVertices[i], 0 + offset_x, y + offset_y, z + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0.8, 0.2, 1);
+	i++;
+
+	m3dLoadVector3(bodenVertices[i], 0 + offset_x, 0 + offset_y, z + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0.8, 0, 1);
+	i++;
+
+	m3dLoadVector3(bodenVertices[i], x + offset_x, 0 + offset_y, z + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0.8, 0.2, 1);
+	i++;
+
+	m3dLoadVector3(bodenVertices[i], x + offset_x, 0 + offset_y, 0 + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0.8, 0, 1);
+	i++;
+
+	corner.Begin(GL_TRIANGLE_FAN, val);
+	corner.CopyVertexData3f(bodenVertices);
+	corner.CopyColorData4f(bodenColors);
+	corner.End();
+	corner.Draw();
+
+}
+void CreateCircle() {
+
+	GLBatch boden;
 	// Erzeuge einen weiteren Triangle_Fan um den Boden zu bedecken
 	M3DVector3f bodenVertices[18];
 	M3DVector4f bodenColors[18];
 	// Das Zentrum des Triangle_Fans ist im Ursprung
 	m3dLoadVector3(bodenVertices[0], 0, 0, 0);
 	m3dLoadVector4(bodenColors[0], 1, 0, 0, 1);
-	i = 1;
-	for (float angle = 0.0f; angle < (2.0f*GL_PI); angle += (GL_PI / 8.0f))
+
+	int iPivot = 1;
+	int i = 1;
+	for (float angle = 0.0f; angle < (2.0f * GL_PI); angle += (GL_PI / 8.0f))
 	{
 		// Berechne x und y Positionen des naechsten Vertex
-		float x = 50.0f*sin(angle);
-		float y = 50.0f*cos(angle);
+		float x = 50.0f * sin(angle);
+		float y = 50.0f * cos(angle);
 
 		// Alterniere die Farbe zwischen Rot und Gruen
 		if ((iPivot % 2) == 0)
@@ -122,8 +173,16 @@ void CreateGeometry()
 	boden.CopyVertexData3f(bodenVertices);
 	boden.CopyColorData4f(bodenColors);
 	boden.End();
+	boden.Draw();
 }
 
+void CreateGeometry() {
+	//CreateTent();
+	//CreateCircle();
+	int x = 50, y = 70, z = 50;
+	CreateQuadrat(x, y, z, 0, 0, 0);
+	CreateQuadrat(-x, -y, -z, x, y, z);
+}
 // Aufruf draw scene
 void RenderScene(void)
 {
@@ -157,8 +216,7 @@ void RenderScene(void)
 	//setze den Shader für das Rendern
 	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES, transformPipeline.GetModelViewProjectionMatrix());
 	//Zeichne Konus
-	konus.Draw();
-	boden.Draw();
+	CreateGeometry();
 	//Auf fehler überprüfen
 	gltCheckErrors(0);
 	// Hole die im Stack gespeicherten Transformationsmatrizen wieder zurück
@@ -182,8 +240,6 @@ void SetupRC()
 	//initialisiert die standard shader
 	shaderManager.InitializeStockShaders();
 	transformPipeline.SetMatrixStacks(modelViewMatrix, projectionMatrix);
-	//erzeuge die geometrie
-	CreateGeometry();
 	InitGUI();
 }
 
