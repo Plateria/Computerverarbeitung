@@ -21,8 +21,10 @@ GLMatrixStack modelViewMatrix;
 GLMatrixStack projectionMatrix;
 GLGeometryTransform transformPipeline;
 GLFrustum viewFrustum;
+
 GLBatch konus;
 GLBatch boden;
+
 // Definition der Kreiszahl 
 #define GL_PI 3.1415f
 
@@ -33,6 +35,7 @@ static float rotation[] = { 0, 0, 0, 0 };
 bool bCull = false;
 bool bOutline = false;
 bool bDepth = true;
+bool bBack = false;
 
 
 //GUI
@@ -45,6 +48,7 @@ void InitGUI()
 	TwAddVarRW(bar, "Depth Test?", TW_TYPE_BOOLCPP, &bDepth, "");
 	TwAddVarRW(bar, "Culling?", TW_TYPE_BOOLCPP, &bCull, "");
 	TwAddVarRW(bar, "Backface Wireframe?", TW_TYPE_BOOLCPP, &bOutline, "");
+	TwAddVarRW(bar, "Show Back?", TW_TYPE_BOOLCPP, &bBack, "");
 	//Hier weitere GUI Variablen anlegen. Für Farbe z.B. den Typ TW_TYPE_COLOR4F benutzen
 }
 
@@ -86,7 +90,7 @@ void CreateGeometry()
 	boden.Begin(GL_TRIANGLE_FAN, 18);
 	// Das Zentrum des Triangle_Fans ist im Ursprung
 	boden.Vertex3f(0.0f, 0.0f, 0.0f);
-	for (float angle = 0.0f; angle < (2.0f*GL_PI); angle += (GL_PI / 8.0f))
+	for (float angle = (2.0f * GL_PI); angle > 0; angle -= (GL_PI / 8.0f))
 	{
 		// Berechne x und y Positionen des naechsten Vertex
 		float x = 50.0f*sin(angle);
@@ -104,7 +108,6 @@ void CreateGeometry()
 		// Spezifiziere den naechsten Vertex des Triangle_Fans
 		boden.Vertex3f(x, y, 0);
 	}
-
 	// Fertig mit dem Bodens
 	boden.End();
 
@@ -116,6 +119,9 @@ void RenderScene(void)
 	// Clearbefehle für den color buffer und den depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// Default "GL_BACK" um Seiten, die von einem weg zeigen zu entfernen.
+	// Gegenstück "GL_FRONT", mit "GL_FRONT_AND_BACK" wird alles entfernt durch culling.
+	glCullFace(GL_BACK);
 	// Schalte culling ein falls das Flag gesetzt ist
 	if (bCull)
 		glEnable(GL_CULL_FACE);
@@ -134,6 +140,7 @@ void RenderScene(void)
 	else
 		glPolygonMode(GL_BACK, GL_FILL);
 
+
 	// Speichere den matrix state und führe die Rotation durch
 	modelViewMatrix.PushMatrix();
 	M3DMatrix44f rot;
@@ -142,6 +149,12 @@ void RenderScene(void)
 
 	//setze den Shader für das Rendern und übergebe die Model-View-Projection Matrix
 	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES, transformPipeline.GetModelViewProjectionMatrix());
+
+	// Tausche Vorder- und Rückseite
+	if (bBack)
+		glFrontFace(GL_CCW);
+	else
+		glFrontFace(GL_CW);
 	//Zeichne Konus und Boden
 	konus.Draw();
 	boden.Draw();
@@ -150,6 +163,8 @@ void RenderScene(void)
 	// Hole die im Stack gespeicherten Transformationsmatrizen wieder zurück
 	modelViewMatrix.PopMatrix();
 
+	// Wieder auf Normal stellen, sodass die GUI nicht zerstört wird.
+	glFrontFace(GL_CW);
 	TwDraw();
 	// Vertausche Front- und Backbuffer
 	glutSwapBuffers();
