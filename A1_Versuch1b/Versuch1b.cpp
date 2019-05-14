@@ -22,8 +22,9 @@ GLMatrixStack projectionMatrix;
 GLGeometryTransform transformPipeline;
 GLFrustum viewFrustum;
 
-GLBatch konus;
-GLBatch boden;
+GLBatch cylinderBottom;
+GLBatch cylinderTop;
+GLBatch cylinderMantle;
 
 
 // Definition der Kreiszahl 
@@ -37,6 +38,82 @@ bool bCull = false;
 bool bOutline = false;
 bool bDepth = true;
 
+bool showCylinder = true;
+
+float cylinderHeight = 60;
+float cylinderRadius = 15;
+unsigned int cylinderTesselation = 18;
+
+void CreateCylinder(void);
+
+//Set Funktion für GUI, wird aufgerufen wenn Variable im GUI geändert wird
+void TW_CALL SetCylinderTesselation(const void* value, void* clientData)
+{
+	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
+	const unsigned int* uintptr = static_cast<const unsigned int*>(value);
+
+	//Setzen der Variable auf neuen Wert
+	cylinderTesselation = *uintptr;
+
+	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
+	CreateCylinder();
+}
+
+//Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
+void TW_CALL GetCylinderTesselation(void* value, void* clientData)
+{
+	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
+	unsigned int* uintptr = static_cast<unsigned int*>(value);
+
+	//Variablen Wert and GUI weiterreichen
+	*uintptr = cylinderTesselation;
+}
+
+//Set Funktion für GUI, wird aufgerufen wenn Variable im GUI geändert wird
+void TW_CALL SetCylinderHeight(const void* value, void* clientData)
+{
+	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
+	const float* floatptr = static_cast<const float*>(value);
+
+	//Setzen der Variable auf neuen Wert
+	cylinderHeight = *floatptr;
+
+	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
+	CreateCylinder();
+}
+
+//Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
+void TW_CALL GetCylinderHeight(void* value, void* clientData)
+{
+	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
+	float* floatptr = static_cast<float*>(value);
+
+	//Variablen Wert and GUI weiterreichen
+	*floatptr = cylinderHeight;
+}
+
+//Set Funktion für GUI, wird aufgerufen wenn Variable im GUI geändert wird
+void TW_CALL SetCylinderRadius(const void* value, void* clientData)
+{
+	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
+	const float* floatptr = static_cast<const float*>(value);
+
+	//Setzen der Variable auf neuen Wert
+	cylinderRadius = *floatptr;
+
+	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
+	CreateCylinder();
+}
+
+//Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
+void TW_CALL GetCylinderRadius(void* value, void* clientData)
+{
+	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
+	float* floatptr = static_cast<float*>(value);
+
+	//Variablen Wert and GUI weiterreichen
+	*floatptr = cylinderRadius;
+}
 
 //GUI
 TwBar *bar;
@@ -49,79 +126,91 @@ void InitGUI()
 	TwAddVarRW(bar, "Culling?", TW_TYPE_BOOLCPP, &bCull, "");
 	TwAddVarRW(bar, "Backface Wireframe?", TW_TYPE_BOOLCPP, &bOutline, "");
 	//Hier weitere GUI Variablen anlegen. Für Farbe z.B. den Typ TW_TYPE_COLOR4F benutzen
+	TwAddVarRW(bar, "Show Cylinder?", TW_TYPE_BOOLCPP, &showCylinder, "");
+	TwAddVarCB(bar, "Cylinder Height", TW_TYPE_FLOAT, SetCylinderHeight, GetCylinderHeight, NULL, "");
+	TwAddVarCB(bar, "Cylinder Radius", TW_TYPE_FLOAT, SetCylinderRadius, GetCylinderRadius, NULL, "");
+	TwAddVarCB(bar, "Cylinder Tesselation", TW_TYPE_UINT32, SetCylinderTesselation, GetCylinderTesselation, NULL, "");
 }
 
-void CreateGeometry()
+void CreateCylinder()
 {
-	//18 Vertices anlegen
-	M3DVector3f konusVertices[18];
-	M3DVector4f konusColors[18];
-	// Die Spitze des Konus ist ein Vertex, den alle Triangles gemeinsam haben;
-	// um einen Konus anstatt einen Kreis zu produzieren muss der Vertex einen positiven z-Wert haben
-	m3dLoadVector3(konusVertices[0], 0, 0, 75);
-	m3dLoadVector4(konusColors[0], 0, 1, 0, 1);
-	// Kreise um den Mittelpunkt und spezifiziere Vertices entlang des Kreises
-	// um einen Triangle_Fan zu erzeugen
+	if (cylinderTesselation < 5)
+		cylinderTesselation = 5;
+	if (cylinderHeight < 1)
+		cylinderHeight = 1;
+	if (cylinderRadius < 1)
+		cylinderRadius = 1;
+
+	M3DVector3f* cylinderBottomVertices = new M3DVector3f[cylinderTesselation];
+	M3DVector4f* cylinderBottomColors = new M3DVector4f[cylinderTesselation];
+	M3DVector3f* cylinderTopVertices = new M3DVector3f[cylinderTesselation];
+	M3DVector4f* cylinderTopColors = new M3DVector4f[cylinderTesselation];
+	M3DVector3f* cylinderMantleVertices = new M3DVector3f[(cylinderTesselation - 1) * 2];
+	M3DVector4f* cylinderMantleColors = new M3DVector4f[(cylinderTesselation - 1) * 2];
+
+	m3dLoadVector3(cylinderBottomVertices[0], 0, 0, 0);
+	m3dLoadVector4(cylinderBottomColors[0], 1, 0, 0, 1);
+	m3dLoadVector3(cylinderTopVertices[0], 0, 0, cylinderHeight);
+	m3dLoadVector4(cylinderTopColors[0], 1, 0, 0, 1);
+
 	int iPivot = 1;
 	int i = 1;
-	for (float angle = 0.0f; angle < (2.0f*GL_PI); angle += (GL_PI / 8.0f))
+	int steps = cylinderTesselation - 2;
+	float increment = (2.0f * GL_PI) / steps;
+
+	for (int step = 0; step <= steps; step++)
 	{
-		// Berechne x und y Positionen des naechsten Vertex
-		float x = 50.0f*sin(angle);
-		float y = 50.0f*cos(angle);
+		float angle = step * increment;
+		float x = cylinderRadius * sin(-angle);
+		float y = cylinderRadius * cos(-angle);
 
-		// Alterniere die Farbe zwischen Rot und Gruen
 		if ((iPivot % 2) == 0)
-			m3dLoadVector4(konusColors[i], 0.235, 0.235, 0.235, 1);
-		else
-			m3dLoadVector4(konusColors[i], 0, 0.6, 1, 1);
+		{
+			m3dLoadVector4(cylinderBottomColors[cylinderTesselation - i], 1, 0.8, 0.2, 1);
+			m3dLoadVector4(cylinderTopColors[i], 1, 0.8, 0.2, 1);
+		}
+		else {
+			m3dLoadVector4(cylinderBottomColors[cylinderTesselation - i], 0, 0.8, 0, 1);
+			m3dLoadVector4(cylinderTopColors[i], 0, 0.8, 0, 1);
+		}
 
-		// Inkrementiere iPivot um die Farbe beim naechsten mal zu wechseln
+		m3dLoadVector3(cylinderBottomVertices[i], x, y, 0);
+		m3dLoadVector3(cylinderTopVertices[cylinderTesselation - i], x, y, cylinderHeight);
+
+		m3dLoadVector3(cylinderMantleVertices[(i - 1) * 2], x, y, 0);
+		m3dLoadVector3(cylinderMantleVertices[(i - 1) * 2 + 1], x, y, cylinderHeight);
+		m3dLoadVector4(cylinderMantleColors[(i - 1) * 2], 1, 0.8, 0.2, 1);
+		m3dLoadVector4(cylinderMantleColors[(i - 1) * 2 + 1], 0, 0.8, 0, 1);
+
 		iPivot++;
-
-		// Spezifiziere den naechsten Vertex des Triangle_Fans
-		m3dLoadVector3(konusVertices[i], x, y, 0);
 		i++;
 	}
 
-	konus.Begin(GL_TRIANGLE_FAN, 18);
-	konus.CopyVertexData3f(konusVertices);
-	konus.CopyColorData4f(konusColors);
-	konus.End();
+	cylinderBottom = *new GLBatch;
+	cylinderTop = *new GLBatch;
+	cylinderMantle = *new GLBatch;
 
+	cylinderBottom.Begin(GL_TRIANGLE_FAN, cylinderTesselation);
+	cylinderBottom.CopyVertexData3f(cylinderBottomVertices);
+	cylinderBottom.CopyColorData4f(cylinderBottomColors);
+	cylinderBottom.End();
 
+	cylinderTop.Begin(GL_TRIANGLE_FAN, cylinderTesselation);
+	cylinderTop.CopyVertexData3f(cylinderTopVertices);
+	cylinderTop.CopyColorData4f(cylinderTopColors);
+	cylinderTop.End();
 
-	// Erzeuge einen weiteren Triangle_Fan um den Boden zu bedecken
-	M3DVector3f bodenVertices[18];
-	M3DVector4f bodenColors[18];
-	// Das Zentrum des Triangle_Fans ist im Ursprung
-	m3dLoadVector3(bodenVertices[0], 0, 0, 0);
-	m3dLoadVector4(bodenColors[0], 1, 0, 0, 1);
-	i = 1;
-	for (float angle = 0.0f; angle < (2.0f*GL_PI); angle += (GL_PI / 8.0f))
-	{
-		// Berechne x und y Positionen des naechsten Vertex
-		float x = 50.0f*sin(angle);
-		float y = 50.0f*cos(angle);
+	cylinderMantle.Begin(GL_TRIANGLE_STRIP, (cylinderTesselation - 1) * 2);
+	cylinderMantle.CopyVertexData3f(cylinderMantleVertices);
+	cylinderMantle.CopyColorData4f(cylinderMantleColors);
+	cylinderMantle.End();
 
-		// Alterniere die Farbe zwischen Rot und Gruen
-		if ((iPivot % 2) == 0)
-			m3dLoadVector4(bodenColors[i], 1, 0.8, 0.2, 1);
-		else
-			m3dLoadVector4(bodenColors[i], 0, 0.8, 0, 1);
-
-		// Inkrementiere iPivot um die Farbe beim naechsten mal zu wechseln
-		iPivot++;
-
-		// Spezifiziere den naechsten Vertex des Triangle_Fans
-		m3dLoadVector3(bodenVertices[i], x, y, 0);
-		i++;
-	}
-
-	boden.Begin(GL_TRIANGLE_FAN, 18);
-	boden.CopyVertexData3f(bodenVertices);
-	boden.CopyColorData4f(bodenColors);
-	boden.End();
+	delete[] cylinderBottomVertices;
+	delete[] cylinderBottomColors;
+	delete[] cylinderTopVertices;
+	delete[] cylinderTopColors;
+	delete[] cylinderMantleVertices;
+	delete[] cylinderMantleColors;
 }
 
 // Aufruf draw scene
@@ -156,9 +245,13 @@ void RenderScene(void)
 
 	//setze den Shader für das Rendern
 	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES, transformPipeline.GetModelViewProjectionMatrix());
-	//Zeichne Konus
-	konus.Draw();
-	boden.Draw();
+
+	if (showCylinder) {
+		cylinderBottom.Draw();
+		cylinderTop.Draw();
+		cylinderMantle.Draw();
+	}
+
 	//Auf fehler überprüfen
 	gltCheckErrors(0);
 	// Hole die im Stack gespeicherten Transformationsmatrizen wieder zurück
@@ -183,7 +276,7 @@ void SetupRC()
 	shaderManager.InitializeStockShaders();
 	transformPipeline.SetMatrixStacks(modelViewMatrix, projectionMatrix);
 	//erzeuge die geometrie
-	CreateGeometry();
+	CreateCylinder();
 	InitGUI();
 }
 
