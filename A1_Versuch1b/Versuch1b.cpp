@@ -26,6 +26,7 @@ GLBatch cylinderBottom;
 GLBatch cylinderTop;
 GLBatch cylinderMantle;
 
+GLBatch* sphereSectorBatches;
 
 // Definition der Kreiszahl 
 #define GL_PI 3.1415f
@@ -38,13 +39,19 @@ bool bCull = false;
 bool bOutline = false;
 bool bDepth = true;
 
-bool showCylinder = true;
+bool showCylinder = false;
+bool showSphere = true;
 
 float cylinderHeight = 60;
 float cylinderRadius = 15;
 unsigned int cylinderTesselation = 18;
 
+float sphereRadius = 30;
+unsigned int sphereStacks = 10;
+unsigned int sphereSectors = 20;
+
 void CreateCylinder(void);
+void CreateSphere(void);
 
 //Set Funktion für GUI, wird aufgerufen wenn Variable im GUI geändert wird
 void TW_CALL SetCylinderTesselation(const void* value, void* clientData)
@@ -115,6 +122,75 @@ void TW_CALL GetCylinderRadius(void* value, void* clientData)
 	*floatptr = cylinderRadius;
 }
 
+//Set Funktion für GUI, wird aufgerufen wenn Variable im GUI geändert wird
+void TW_CALL SetSphereRadius(const void* value, void* clientData)
+{
+	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
+	const float* floatptr = static_cast<const float*>(value);
+
+	//Setzen der Variable auf neuen Wert
+	sphereRadius = *floatptr;
+
+	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
+	CreateSphere();
+}
+
+//Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
+void TW_CALL GetSphereRadius(void* value, void* clientData)
+{
+	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
+	float* floatptr = static_cast<float*>(value);
+
+	//Variablen Wert and GUI weiterreichen
+	*floatptr = sphereRadius;
+}
+
+//Set Funktion für GUI, wird aufgerufen wenn Variable im GUI geändert wird
+void TW_CALL SetSphereStacks(const void* value, void* clientData)
+{
+	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
+	const unsigned int* intptr = static_cast<const unsigned int*>(value);
+
+	//Setzen der Variable auf neuen Wert
+	sphereStacks = *intptr;
+
+	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
+	CreateSphere();
+}
+
+//Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
+void TW_CALL GetSphereStacks(void* value, void* clientData)
+{
+	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
+	unsigned int* intptr = static_cast<unsigned int*>(value);
+
+	//Variablen Wert and GUI weiterreichen
+	*intptr = sphereStacks;
+}
+
+//Set Funktion für GUI, wird aufgerufen wenn Variable im GUI geändert wird
+void TW_CALL SetSphereSectors(const void* value, void* clientData)
+{
+	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
+	const unsigned int* intptr = static_cast<const unsigned int*>(value);
+
+	//Setzen der Variable auf neuen Wert
+	sphereSectors = *intptr;
+
+	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
+	CreateSphere();
+}
+
+//Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
+void TW_CALL GetSphereSectors(void* value, void* clientData)
+{
+	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
+	unsigned int* intptr = static_cast<unsigned int*>(value);
+
+	//Variablen Wert and GUI weiterreichen
+	*intptr = sphereSectors;
+}
+
 //GUI
 TwBar *bar;
 void InitGUI()
@@ -130,6 +206,10 @@ void InitGUI()
 	TwAddVarCB(bar, "Cylinder Height", TW_TYPE_FLOAT, SetCylinderHeight, GetCylinderHeight, NULL, "");
 	TwAddVarCB(bar, "Cylinder Radius", TW_TYPE_FLOAT, SetCylinderRadius, GetCylinderRadius, NULL, "");
 	TwAddVarCB(bar, "Cylinder Tesselation", TW_TYPE_UINT32, SetCylinderTesselation, GetCylinderTesselation, NULL, "");
+	TwAddVarRW(bar, "Show Sphere?", TW_TYPE_BOOLCPP, &showSphere, "");
+	TwAddVarCB(bar, "Sphere Radius", TW_TYPE_FLOAT, SetSphereRadius, GetSphereRadius, NULL, "");
+	TwAddVarCB(bar, "Sphere Stacks", TW_TYPE_UINT32, SetSphereStacks, GetSphereStacks, NULL, "");
+	TwAddVarCB(bar, "Sphere Sectors", TW_TYPE_UINT32, SetSphereSectors, GetSphereSectors, NULL, "");
 }
 
 void CreateCylinder()
@@ -213,6 +293,63 @@ void CreateCylinder()
 	delete[] cylinderMantleColors;
 }
 
+void CreateSphere(void)
+{
+	if (sphereRadius < 1)
+		sphereRadius = 1;
+	if (sphereStacks < 3)
+		sphereStacks = 3;
+	if (sphereSectors < 3)
+		sphereSectors = 3;
+
+	float stackAngleIncrement = GL_PI / sphereStacks;
+	float sectorAngleIncrement = (2.0f * GL_PI) / sphereSectors;
+
+	sphereSectorBatches = new GLBatch[sphereSectors];
+
+	for (int sector = 0; sector < sphereSectors; sector++)
+	{
+		float sectorAngle = -sector * sectorAngleIncrement;
+
+		M3DVector3f* sphereVertices = new M3DVector3f[2 * sphereStacks];
+		M3DVector4f* sphereColors = new M3DVector4f[2 * sphereStacks];
+		m3dLoadVector3(sphereVertices[0], 0, 0, sphereRadius);
+		m3dLoadVector4(sphereColors[0], 1, 0, 0, 1);
+
+		int i = 1;
+		for (int stack = 1; stack < sphereStacks; stack++)
+		{
+			float stackAngle = -stack * stackAngleIncrement;
+
+			float x = (sphereRadius * cos((GL_PI / 2.0f) + stackAngle)) * cos(sectorAngle);
+			float y = (sphereRadius * cos((GL_PI / 2.0f) + stackAngle)) * sin(sectorAngle);
+			float z = sphereRadius * sin((GL_PI / 2.0f) + stackAngle);
+
+			m3dLoadVector3(sphereVertices[i], x, y, z);
+			m3dLoadVector4(sphereColors[i], 1, 0.8, 0.2, 1);
+
+			float xn = (sphereRadius * cos((GL_PI / 2.0f) + stackAngle)) * cos(sectorAngle - sectorAngleIncrement);
+			float yn = (sphereRadius * cos((GL_PI / 2.0f) + stackAngle)) * sin(sectorAngle - sectorAngleIncrement);
+
+			m3dLoadVector3(sphereVertices[i + 1], xn, yn, z);
+			m3dLoadVector4(sphereColors[i + 1], 0, 0.8, 0, 1);
+
+			i = i + 2;
+		}
+		m3dLoadVector3(sphereVertices[i], 0, 0, -sphereRadius);
+		m3dLoadVector4(sphereColors[i], 1, 0, 0, 1);
+
+		sphereSectorBatches[sector] = *new GLBatch;
+		sphereSectorBatches[sector].Begin(GL_TRIANGLE_STRIP, sphereStacks * 2);
+		sphereSectorBatches[sector].CopyVertexData3f(sphereVertices);
+		sphereSectorBatches[sector].CopyColorData4f(sphereColors);
+		sphereSectorBatches[sector].End();
+
+		delete[] sphereVertices;
+		delete[] sphereColors;
+	}
+}
+
 // Aufruf draw scene
 void RenderScene(void)
 {
@@ -251,6 +388,12 @@ void RenderScene(void)
 		cylinderTop.Draw();
 		cylinderMantle.Draw();
 	}
+	if (showSphere) {
+		for (int i = 0; i < sphereSectors; i++)
+		{
+			sphereSectorBatches[i].Draw();
+		}
+	}
 
 	//Auf fehler überprüfen
 	gltCheckErrors(0);
@@ -277,6 +420,7 @@ void SetupRC()
 	transformPipeline.SetMatrixStacks(modelViewMatrix, projectionMatrix);
 	//erzeuge die geometrie
 	CreateCylinder();
+	CreateSphere();
 	InitGUI();
 }
 
