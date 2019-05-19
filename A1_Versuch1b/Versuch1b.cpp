@@ -293,6 +293,54 @@ void CreateCylinder()
 	delete[] cylinderMantleColors;
 }
 
+void CreateQuadrat(int x, int y, int z, int offset_x, int offset_y, int offset_z) {
+
+	const int val = 8;
+	GLBatch corner;
+	M3DVector3f bodenVertices[val];
+	M3DVector4f bodenColors[val];
+	int i = 0;
+	// Das Zentrum des Triangle_Fans ist im Ursprung
+	m3dLoadVector3(bodenVertices[i], 0 + offset_x, 0 + offset_y, 0 + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0, 0, 1);
+	i++;
+
+	m3dLoadVector3(bodenVertices[i], x + offset_x, 0 + offset_y, 0 + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0.8, 0, 1);
+	i++;
+
+	m3dLoadVector3(bodenVertices[i], x + offset_x, y + offset_y, 0 + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0.8, 0.2, 1);
+	i++;
+
+	m3dLoadVector3(bodenVertices[i], 0 + offset_x, y + offset_y, 0 + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0.8, 0, 1);
+	i++;
+
+	m3dLoadVector3(bodenVertices[i], 0 + offset_x, y + offset_y, z + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0.8, 0.2, 1);
+	i++;
+
+	m3dLoadVector3(bodenVertices[i], 0 + offset_x, 0 + offset_y, z + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0.8, 0, 1);
+	i++;
+
+	m3dLoadVector3(bodenVertices[i], x + offset_x, 0 + offset_y, z + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0.8, 0.2, 1);
+	i++;
+
+	m3dLoadVector3(bodenVertices[i], x + offset_x, 0 + offset_y, 0 + offset_z);
+	m3dLoadVector4(bodenColors[i], 1, 0.8, 0, 1);
+	i++;
+
+	corner.Begin(GL_TRIANGLE_FAN, val);
+	corner.CopyVertexData3f(bodenVertices);
+	corner.CopyColorData4f(bodenColors);
+	corner.End();
+	corner.Draw();
+
+}
+
 void CreateSphere(void)
 {
 	if (sphereRadius < 1)
