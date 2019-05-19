@@ -41,6 +41,7 @@ bool bDepth = true;
 
 bool showCylinder = false;
 bool showSphere = true;
+bool showQuader = false;
 
 float cylinderHeight = 60;
 float cylinderRadius = 15;
@@ -49,6 +50,11 @@ unsigned int cylinderTesselation = 18;
 float sphereRadius = 30;
 unsigned int sphereStacks = 10;
 unsigned int sphereSectors = 20;
+
+float quaderX = 50;
+float quaderY = 50;
+float quaderZ = 50;
+
 
 void CreateCylinder(void);
 void CreateSphere(void);
@@ -210,6 +216,7 @@ void InitGUI()
 	TwAddVarCB(bar, "Sphere Radius", TW_TYPE_FLOAT, SetSphereRadius, GetSphereRadius, NULL, "");
 	TwAddVarCB(bar, "Sphere Stacks", TW_TYPE_UINT32, SetSphereStacks, GetSphereStacks, NULL, "");
 	TwAddVarCB(bar, "Sphere Sectors", TW_TYPE_UINT32, SetSphereSectors, GetSphereSectors, NULL, "");
+	TwAddVarRW(bar, "Show Quader?", TW_TYPE_BOOLCPP, &showQuader, "");
 }
 
 void CreateCylinder()
@@ -398,6 +405,36 @@ void CreateSphere(void)
 	}
 }
 
+void drawGeometry(void) {
+	
+	// ich verstehe es doch nicht ganz so easy..
+
+	glViewport(0, 0, 0, 0);
+	viewFrustum.SetPerspective(60.0, 1.5, 0.5, 8.0);
+	projectionMatrix.LoadMatrix(viewFrustum.GetProjectionMatrix());
+	modelViewMatrix.LoadIdentity();
+	modelViewMatrix.Translate(0, 0, 0);
+	
+	GLfloat i, j;
+
+	shaderManager.UseStockShader(GLT_SHADER_DEFAULT_LIGHT,
+		modelViewMatrix.GetMatrix(),
+		projectionMatrix.GetMatrix(), BACKGROUND_BLUE);
+
+	cylinderBottom.Draw();
+	cylinderTop.Draw();
+	cylinderMantle.Draw();
+
+	modelViewMatrix.PushMatrix();
+	modelViewMatrix.Translate(0.5, 0, 0);
+
+	for (int i = 0; i < sphereSectors; i++)
+	{
+		sphereSectorBatches[i].Draw();
+	}
+	modelViewMatrix.PopMatrix();
+
+}
 // Aufruf draw scene
 void RenderScene(void)
 {
@@ -431,6 +468,11 @@ void RenderScene(void)
 	//setze den Shader für das Rendern
 	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES, transformPipeline.GetModelViewProjectionMatrix());
 
+	/*
+	if (showQuader) {
+		CreateQuadrat(quaderX, quaderY, quaderZ, 0, 0, 0);
+		CreateQuadrat(-quaderX, -quaderY, -quaderZ, quaderX, quaderY, quaderZ);
+	}
 	if (showCylinder) {
 		cylinderBottom.Draw();
 		cylinderTop.Draw();
@@ -442,6 +484,9 @@ void RenderScene(void)
 			sphereSectorBatches[i].Draw();
 		}
 	}
+	*/
+
+	drawGeometry();
 
 	//Auf fehler überprüfen
 	gltCheckErrors(0);
