@@ -22,12 +22,6 @@ GLMatrixStack projectionMatrix;
 GLGeometryTransform transformPipeline;
 GLFrustum viewFrustum;
 
-GLBatch cylinderBottom;
-GLBatch cylinderTop;
-GLBatch cylinderMantle;
-
-GLBatch* sphereSectorBatches;
-
 // Definition der Kreiszahl 
 #define GL_PI 3.1415f
 
@@ -42,6 +36,7 @@ bool bDepth = true;
 bool showCylinder = false;
 bool showSphere = true;
 bool showQuader = false;
+bool showScene = false;
 
 float cylinderHeight = 60;
 float cylinderRadius = 15;
@@ -56,8 +51,8 @@ float quaderY = 50;
 float quaderZ = 50;
 
 
-void CreateCylinder(void);
-void CreateSphere(void);
+void CreateCylinder(float height, float radius, int tesselation);
+void CreateSphere(float radius, int stacks, int sectors);
 
 //Set Funktion für GUI, wird aufgerufen wenn Variable im GUI geändert wird
 void TW_CALL SetCylinderTesselation(const void* value, void* clientData)
@@ -69,7 +64,7 @@ void TW_CALL SetCylinderTesselation(const void* value, void* clientData)
 	cylinderTesselation = *uintptr;
 
 	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
-	CreateCylinder();
+	CreateCylinder(cylinderHeight, cylinderRadius, cylinderTesselation);
 }
 
 //Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
@@ -92,7 +87,7 @@ void TW_CALL SetCylinderHeight(const void* value, void* clientData)
 	cylinderHeight = *floatptr;
 
 	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
-	CreateCylinder();
+	CreateCylinder(cylinderHeight, cylinderRadius, cylinderTesselation);
 }
 
 //Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
@@ -115,7 +110,7 @@ void TW_CALL SetCylinderRadius(const void* value, void* clientData)
 	cylinderRadius = *floatptr;
 
 	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
-	CreateCylinder();
+	CreateCylinder(cylinderHeight, cylinderRadius, cylinderTesselation);
 }
 
 //Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
@@ -138,7 +133,7 @@ void TW_CALL SetSphereRadius(const void* value, void* clientData)
 	sphereRadius = *floatptr;
 
 	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
-	CreateSphere();
+	CreateSphere(sphereRadius, sphereStacks, sphereSectors);
 }
 
 //Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
@@ -161,7 +156,7 @@ void TW_CALL SetSphereStacks(const void* value, void* clientData)
 	sphereStacks = *intptr;
 
 	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
-	CreateSphere();
+	CreateSphere(sphereRadius, sphereStacks, sphereSectors);
 }
 
 //Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
@@ -184,7 +179,7 @@ void TW_CALL SetSphereSectors(const void* value, void* clientData)
 	sphereSectors = *intptr;
 
 	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
-	CreateSphere();
+	CreateSphere(sphereRadius, sphereStacks, sphereSectors);
 }
 
 //Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
@@ -217,55 +212,56 @@ void InitGUI()
 	TwAddVarCB(bar, "Sphere Stacks", TW_TYPE_UINT32, SetSphereStacks, GetSphereStacks, NULL, "");
 	TwAddVarCB(bar, "Sphere Sectors", TW_TYPE_UINT32, SetSphereSectors, GetSphereSectors, NULL, "");
 	TwAddVarRW(bar, "Show Quader?", TW_TYPE_BOOLCPP, &showQuader, "");
+	TwAddVarRW(bar, "Show Scene?", TW_TYPE_BOOLCPP, &showScene, "");
 }
 
-void CreateCylinder()
+void CreateCylinder(float height, float radius, int tesselation)
 {
-	if (cylinderTesselation < 5)
-		cylinderTesselation = 5;
-	if (cylinderHeight < 1)
-		cylinderHeight = 1;
-	if (cylinderRadius < 1)
-		cylinderRadius = 1;
+	if (tesselation < 5)
+		tesselation = 5;
+	if (height < 1)
+		height = 1;
+	if (radius < 1)
+		radius = 1;
 
-	M3DVector3f* cylinderBottomVertices = new M3DVector3f[cylinderTesselation];
-	M3DVector4f* cylinderBottomColors = new M3DVector4f[cylinderTesselation];
-	M3DVector3f* cylinderTopVertices = new M3DVector3f[cylinderTesselation];
-	M3DVector4f* cylinderTopColors = new M3DVector4f[cylinderTesselation];
-	M3DVector3f* cylinderMantleVertices = new M3DVector3f[(cylinderTesselation - 1) * 2];
-	M3DVector4f* cylinderMantleColors = new M3DVector4f[(cylinderTesselation - 1) * 2];
+	M3DVector3f* cylinderBottomVertices = new M3DVector3f[tesselation];
+	M3DVector4f* cylinderBottomColors = new M3DVector4f[tesselation];
+	M3DVector3f* cylinderTopVertices = new M3DVector3f[tesselation];
+	M3DVector4f* cylinderTopColors = new M3DVector4f[tesselation];
+	M3DVector3f* cylinderMantleVertices = new M3DVector3f[(tesselation - 1) * 2];
+	M3DVector4f* cylinderMantleColors = new M3DVector4f[(tesselation - 1) * 2];
 
 	m3dLoadVector3(cylinderBottomVertices[0], 0, 0, 0);
 	m3dLoadVector4(cylinderBottomColors[0], 1, 0, 0, 1);
-	m3dLoadVector3(cylinderTopVertices[0], 0, 0, cylinderHeight);
+	m3dLoadVector3(cylinderTopVertices[0], 0, 0, height);
 	m3dLoadVector4(cylinderTopColors[0], 1, 0, 0, 1);
 
 	int iPivot = 1;
 	int i = 1;
-	int steps = cylinderTesselation - 2;
+	int steps = tesselation - 2;
 	float increment = (2.0f * GL_PI) / steps;
 
 	for (int step = 0; step <= steps; step++)
 	{
 		float angle = step * increment;
-		float x = cylinderRadius * sin(-angle);
-		float y = cylinderRadius * cos(-angle);
+		float x = radius * sin(-angle);
+		float y = radius * cos(-angle);
 
 		if ((iPivot % 2) == 0)
 		{
-			m3dLoadVector4(cylinderBottomColors[cylinderTesselation - i], 1, 0.8, 0.2, 1);
+			m3dLoadVector4(cylinderBottomColors[tesselation - i], 1, 0.8, 0.2, 1);
 			m3dLoadVector4(cylinderTopColors[i], 1, 0.8, 0.2, 1);
 		}
 		else {
-			m3dLoadVector4(cylinderBottomColors[cylinderTesselation - i], 0, 0.8, 0, 1);
+			m3dLoadVector4(cylinderBottomColors[tesselation - i], 0, 0.8, 0, 1);
 			m3dLoadVector4(cylinderTopColors[i], 0, 0.8, 0, 1);
 		}
 
 		m3dLoadVector3(cylinderBottomVertices[i], x, y, 0);
-		m3dLoadVector3(cylinderTopVertices[cylinderTesselation - i], x, y, cylinderHeight);
+		m3dLoadVector3(cylinderTopVertices[tesselation - i], x, y, height);
 
 		m3dLoadVector3(cylinderMantleVertices[(i - 1) * 2], x, y, 0);
-		m3dLoadVector3(cylinderMantleVertices[(i - 1) * 2 + 1], x, y, cylinderHeight);
+		m3dLoadVector3(cylinderMantleVertices[(i - 1) * 2 + 1], x, y, height);
 		m3dLoadVector4(cylinderMantleColors[(i - 1) * 2], 1, 0.8, 0.2, 1);
 		m3dLoadVector4(cylinderMantleColors[(i - 1) * 2 + 1], 0, 0.8, 0, 1);
 
@@ -273,24 +269,28 @@ void CreateCylinder()
 		i++;
 	}
 
-	cylinderBottom = *new GLBatch;
-	cylinderTop = *new GLBatch;
-	cylinderMantle = *new GLBatch;
+	GLBatch cylinderBottom;
+	GLBatch cylinderTop;
+	GLBatch cylinderMantle;
 
-	cylinderBottom.Begin(GL_TRIANGLE_FAN, cylinderTesselation);
+	cylinderBottom.Begin(GL_TRIANGLE_FAN, tesselation);
 	cylinderBottom.CopyVertexData3f(cylinderBottomVertices);
 	cylinderBottom.CopyColorData4f(cylinderBottomColors);
 	cylinderBottom.End();
 
-	cylinderTop.Begin(GL_TRIANGLE_FAN, cylinderTesselation);
+	cylinderTop.Begin(GL_TRIANGLE_FAN, tesselation);
 	cylinderTop.CopyVertexData3f(cylinderTopVertices);
 	cylinderTop.CopyColorData4f(cylinderTopColors);
 	cylinderTop.End();
 
-	cylinderMantle.Begin(GL_TRIANGLE_STRIP, (cylinderTesselation - 1) * 2);
+	cylinderMantle.Begin(GL_TRIANGLE_STRIP, (tesselation - 1) * 2);
 	cylinderMantle.CopyVertexData3f(cylinderMantleVertices);
 	cylinderMantle.CopyColorData4f(cylinderMantleColors);
 	cylinderMantle.End();
+
+	cylinderBottom.Draw();
+	cylinderTop.Draw();
+	cylinderMantle.Draw();
 
 	delete[] cylinderBottomVertices;
 	delete[] cylinderBottomColors;
@@ -348,90 +348,73 @@ void CreateQuadrat(int x, int y, int z, int offset_x, int offset_y, int offset_z
 
 }
 
-void CreateSphere(void)
+void CreateSphere(float radius, int stacks, int sectors)
 {
-	if (sphereRadius < 1)
-		sphereRadius = 1;
-	if (sphereStacks < 3)
-		sphereStacks = 3;
-	if (sphereSectors < 3)
-		sphereSectors = 3;
+	if (radius < 1)
+		radius = 1;
+	if (stacks < 3)
+		stacks = 3;
+	if (sectors < 3)
+		sectors = 3;
 
-	float stackAngleIncrement = GL_PI / sphereStacks;
-	float sectorAngleIncrement = (2.0f * GL_PI) / sphereSectors;
+	float stackAngleIncrement = GL_PI / stacks;
+	float sectorAngleIncrement = (2.0f * GL_PI) / sectors;
 
-	sphereSectorBatches = new GLBatch[sphereSectors];
-
-	for (int sector = 0; sector < sphereSectors; sector++)
+	for (int sector = 0; sector < sectors; sector++)
 	{
 		float sectorAngle = -sector * sectorAngleIncrement;
 
-		M3DVector3f* sphereVertices = new M3DVector3f[2 * sphereStacks];
-		M3DVector4f* sphereColors = new M3DVector4f[2 * sphereStacks];
-		m3dLoadVector3(sphereVertices[0], 0, 0, sphereRadius);
+		M3DVector3f* sphereVertices = new M3DVector3f[2 * stacks];
+		M3DVector4f* sphereColors = new M3DVector4f[2 * stacks];
+		m3dLoadVector3(sphereVertices[0], 0, 0, radius);
 		m3dLoadVector4(sphereColors[0], 1, 0, 0, 1);
 
 		int i = 1;
-		for (int stack = 1; stack < sphereStacks; stack++)
+		for (int stack = 1; stack < stacks; stack++)
 		{
 			float stackAngle = -stack * stackAngleIncrement;
 
-			float x = (sphereRadius * cos((GL_PI / 2.0f) + stackAngle)) * cos(sectorAngle);
-			float y = (sphereRadius * cos((GL_PI / 2.0f) + stackAngle)) * sin(sectorAngle);
-			float z = sphereRadius * sin((GL_PI / 2.0f) + stackAngle);
+			float x = (radius * cos((GL_PI / 2.0f) + stackAngle)) * cos(sectorAngle);
+			float y = (radius * cos((GL_PI / 2.0f) + stackAngle)) * sin(sectorAngle);
+			float z = radius * sin((GL_PI / 2.0f) + stackAngle);
 
 			m3dLoadVector3(sphereVertices[i], x, y, z);
 			m3dLoadVector4(sphereColors[i], 1, 0.8, 0.2, 1);
 
-			float xn = (sphereRadius * cos((GL_PI / 2.0f) + stackAngle)) * cos(sectorAngle - sectorAngleIncrement);
-			float yn = (sphereRadius * cos((GL_PI / 2.0f) + stackAngle)) * sin(sectorAngle - sectorAngleIncrement);
+			float xn = (radius * cos((GL_PI / 2.0f) + stackAngle)) * cos(sectorAngle - sectorAngleIncrement);
+			float yn = (radius * cos((GL_PI / 2.0f) + stackAngle)) * sin(sectorAngle - sectorAngleIncrement);
 
 			m3dLoadVector3(sphereVertices[i + 1], xn, yn, z);
 			m3dLoadVector4(sphereColors[i + 1], 0, 0.8, 0, 1);
 
 			i = i + 2;
 		}
-		m3dLoadVector3(sphereVertices[i], 0, 0, -sphereRadius);
+		m3dLoadVector3(sphereVertices[i], 0, 0, -radius);
 		m3dLoadVector4(sphereColors[i], 1, 0, 0, 1);
 
-		sphereSectorBatches[sector] = *new GLBatch;
-		sphereSectorBatches[sector].Begin(GL_TRIANGLE_STRIP, sphereStacks * 2);
-		sphereSectorBatches[sector].CopyVertexData3f(sphereVertices);
-		sphereSectorBatches[sector].CopyColorData4f(sphereColors);
-		sphereSectorBatches[sector].End();
+		GLBatch sphereSector;
+		sphereSector.Begin(GL_TRIANGLE_STRIP, stacks * 2);
+		sphereSector.CopyVertexData3f(sphereVertices);
+		sphereSector.CopyColorData4f(sphereColors);
+		sphereSector.End();
+		sphereSector.Draw();
 
 		delete[] sphereVertices;
 		delete[] sphereColors;
 	}
 }
 
-void drawGeometry(void) {
-	
-	// ich verstehe es doch nicht ganz so easy..
+void CreateScene(void) {
 
-	glViewport(0, 0, 0, 0);
-	viewFrustum.SetPerspective(60.0, 1.5, 0.5, 8.0);
-	projectionMatrix.LoadMatrix(viewFrustum.GetProjectionMatrix());
-	modelViewMatrix.LoadIdentity();
-	modelViewMatrix.Translate(0, 0, 0);
-	
-	GLfloat i, j;
-
-	shaderManager.UseStockShader(GLT_SHADER_DEFAULT_LIGHT,
-		modelViewMatrix.GetMatrix(),
-		projectionMatrix.GetMatrix(), BACKGROUND_BLUE);
-
-	cylinderBottom.Draw();
-	cylinderTop.Draw();
-	cylinderMantle.Draw();
+	CreateCylinder(30, 10, 20);
 
 	modelViewMatrix.PushMatrix();
-	modelViewMatrix.Translate(0.5, 0, 0);
+	modelViewMatrix.Translate(0, 0, 50);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES,
+		transformPipeline.GetModelViewProjectionMatrix());
 
-	for (int i = 0; i < sphereSectors; i++)
-	{
-		sphereSectorBatches[i].Draw();
-	}
+	CreateSphere(10, 20, 20);
+
 	modelViewMatrix.PopMatrix();
 
 }
@@ -468,25 +451,20 @@ void RenderScene(void)
 	//setze den Shader für das Rendern
 	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES, transformPipeline.GetModelViewProjectionMatrix());
 
-	/*
+	
 	if (showQuader) {
 		CreateQuadrat(quaderX, quaderY, quaderZ, 0, 0, 0);
 		CreateQuadrat(-quaderX, -quaderY, -quaderZ, quaderX, quaderY, quaderZ);
 	}
 	if (showCylinder) {
-		cylinderBottom.Draw();
-		cylinderTop.Draw();
-		cylinderMantle.Draw();
+		CreateCylinder(cylinderHeight, cylinderRadius, cylinderTesselation);
 	}
 	if (showSphere) {
-		for (int i = 0; i < sphereSectors; i++)
-		{
-			sphereSectorBatches[i].Draw();
-		}
+		CreateSphere(sphereRadius, sphereStacks, sphereSectors);
 	}
-	*/
-
-	drawGeometry();
+	if (showScene) {
+		CreateScene();
+	}
 
 	//Auf fehler überprüfen
 	gltCheckErrors(0);
@@ -511,9 +489,6 @@ void SetupRC()
 	//initialisiert die standard shader
 	shaderManager.InitializeStockShaders();
 	transformPipeline.SetMatrixStacks(modelViewMatrix, projectionMatrix);
-	//erzeuge die geometrie
-	CreateCylinder();
-	CreateSphere();
 	InitGUI();
 }
 
