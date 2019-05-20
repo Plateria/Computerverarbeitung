@@ -51,147 +51,6 @@ float quaderY = 50;
 float quaderZ = 50;
 
 
-void CreateCylinder(float height, float radius, int tesselation);
-void CreateSphere(float radius, int stacks, int sectors);
-
-//Set Funktion für GUI, wird aufgerufen wenn Variable im GUI geändert wird
-void TW_CALL SetCylinderTesselation(const void* value, void* clientData)
-{
-	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
-	const unsigned int* uintptr = static_cast<const unsigned int*>(value);
-
-	//Setzen der Variable auf neuen Wert
-	cylinderTesselation = *uintptr;
-
-	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
-	CreateCylinder(cylinderHeight, cylinderRadius, cylinderTesselation);
-}
-
-//Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
-void TW_CALL GetCylinderTesselation(void* value, void* clientData)
-{
-	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
-	unsigned int* uintptr = static_cast<unsigned int*>(value);
-
-	//Variablen Wert and GUI weiterreichen
-	*uintptr = cylinderTesselation;
-}
-
-//Set Funktion für GUI, wird aufgerufen wenn Variable im GUI geändert wird
-void TW_CALL SetCylinderHeight(const void* value, void* clientData)
-{
-	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
-	const float* floatptr = static_cast<const float*>(value);
-
-	//Setzen der Variable auf neuen Wert
-	cylinderHeight = *floatptr;
-
-	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
-	CreateCylinder(cylinderHeight, cylinderRadius, cylinderTesselation);
-}
-
-//Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
-void TW_CALL GetCylinderHeight(void* value, void* clientData)
-{
-	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
-	float* floatptr = static_cast<float*>(value);
-
-	//Variablen Wert and GUI weiterreichen
-	*floatptr = cylinderHeight;
-}
-
-//Set Funktion für GUI, wird aufgerufen wenn Variable im GUI geändert wird
-void TW_CALL SetCylinderRadius(const void* value, void* clientData)
-{
-	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
-	const float* floatptr = static_cast<const float*>(value);
-
-	//Setzen der Variable auf neuen Wert
-	cylinderRadius = *floatptr;
-
-	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
-	CreateCylinder(cylinderHeight, cylinderRadius, cylinderTesselation);
-}
-
-//Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
-void TW_CALL GetCylinderRadius(void* value, void* clientData)
-{
-	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
-	float* floatptr = static_cast<float*>(value);
-
-	//Variablen Wert and GUI weiterreichen
-	*floatptr = cylinderRadius;
-}
-
-//Set Funktion für GUI, wird aufgerufen wenn Variable im GUI geändert wird
-void TW_CALL SetSphereRadius(const void* value, void* clientData)
-{
-	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
-	const float* floatptr = static_cast<const float*>(value);
-
-	//Setzen der Variable auf neuen Wert
-	sphereRadius = *floatptr;
-
-	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
-	CreateSphere(sphereRadius, sphereStacks, sphereSectors);
-}
-
-//Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
-void TW_CALL GetSphereRadius(void* value, void* clientData)
-{
-	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
-	float* floatptr = static_cast<float*>(value);
-
-	//Variablen Wert and GUI weiterreichen
-	*floatptr = sphereRadius;
-}
-
-//Set Funktion für GUI, wird aufgerufen wenn Variable im GUI geändert wird
-void TW_CALL SetSphereStacks(const void* value, void* clientData)
-{
-	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
-	const unsigned int* intptr = static_cast<const unsigned int*>(value);
-
-	//Setzen der Variable auf neuen Wert
-	sphereStacks = *intptr;
-
-	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
-	CreateSphere(sphereRadius, sphereStacks, sphereSectors);
-}
-
-//Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
-void TW_CALL GetSphereStacks(void* value, void* clientData)
-{
-	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
-	unsigned int* intptr = static_cast<unsigned int*>(value);
-
-	//Variablen Wert and GUI weiterreichen
-	*intptr = sphereStacks;
-}
-
-//Set Funktion für GUI, wird aufgerufen wenn Variable im GUI geändert wird
-void TW_CALL SetSphereSectors(const void* value, void* clientData)
-{
-	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
-	const unsigned int* intptr = static_cast<const unsigned int*>(value);
-
-	//Setzen der Variable auf neuen Wert
-	sphereSectors = *intptr;
-
-	//Hier kann nun der Aufruf gemacht werden um die Geometrie mit neuem Tesselationsfaktor zu erzeugen
-	CreateSphere(sphereRadius, sphereStacks, sphereSectors);
-}
-
-//Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
-void TW_CALL GetSphereSectors(void* value, void* clientData)
-{
-	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
-	unsigned int* intptr = static_cast<unsigned int*>(value);
-
-	//Variablen Wert and GUI weiterreichen
-	*intptr = sphereSectors;
-}
-
 //GUI
 TwBar *bar;
 void InitGUI()
@@ -204,14 +63,17 @@ void InitGUI()
 	TwAddVarRW(bar, "Backface Wireframe?", TW_TYPE_BOOLCPP, &bOutline, "");
 	//Hier weitere GUI Variablen anlegen. Für Farbe z.B. den Typ TW_TYPE_COLOR4F benutzen
 	TwAddVarRW(bar, "Show Cylinder?", TW_TYPE_BOOLCPP, &showCylinder, "");
-	TwAddVarCB(bar, "Cylinder Height", TW_TYPE_FLOAT, SetCylinderHeight, GetCylinderHeight, NULL, "");
-	TwAddVarCB(bar, "Cylinder Radius", TW_TYPE_FLOAT, SetCylinderRadius, GetCylinderRadius, NULL, "");
-	TwAddVarCB(bar, "Cylinder Tesselation", TW_TYPE_UINT32, SetCylinderTesselation, GetCylinderTesselation, NULL, "");
+	TwAddVarRW(bar, "Cylinder Height", TW_TYPE_FLOAT, &cylinderHeight, "");
+	TwAddVarRW(bar, "Cylinder Radius", TW_TYPE_FLOAT, &cylinderRadius,"");
+	TwAddVarRW(bar, "Cylinder Tesselation", TW_TYPE_UINT32, &cylinderTesselation, "");
 	TwAddVarRW(bar, "Show Sphere?", TW_TYPE_BOOLCPP, &showSphere, "");
-	TwAddVarCB(bar, "Sphere Radius", TW_TYPE_FLOAT, SetSphereRadius, GetSphereRadius, NULL, "");
-	TwAddVarCB(bar, "Sphere Stacks", TW_TYPE_UINT32, SetSphereStacks, GetSphereStacks, NULL, "");
-	TwAddVarCB(bar, "Sphere Sectors", TW_TYPE_UINT32, SetSphereSectors, GetSphereSectors, NULL, "");
+	TwAddVarRW(bar, "Sphere Radius", TW_TYPE_FLOAT, &sphereRadius, "");
+	TwAddVarRW(bar, "Sphere Stacks", TW_TYPE_UINT32, &sphereStacks, "");
+	TwAddVarRW(bar, "Sphere Sectors", TW_TYPE_UINT32, &sphereSectors, "");
 	TwAddVarRW(bar, "Show Quader?", TW_TYPE_BOOLCPP, &showQuader, "");
+	TwAddVarRW(bar, "Quader width", TW_TYPE_FLOAT, &quaderX, "");
+	TwAddVarRW(bar, "Quader height", TW_TYPE_FLOAT, &quaderY, "");
+	TwAddVarRW(bar, "Quader length", TW_TYPE_FLOAT, &quaderZ, "");
 	TwAddVarRW(bar, "Show Scene?", TW_TYPE_BOOLCPP, &showScene, "");
 }
 
@@ -300,14 +162,14 @@ void CreateCylinder(float height, float radius, int tesselation)
 	delete[] cylinderMantleColors;
 }
 
-void CreateQuadrat(int x, int y, int z, int offset_x, int offset_y, int offset_z) {
+void CreateCuboidPart(int x, int y, int z, int offset_x, int offset_y, int offset_z) {
 
 	const int val = 8;
 	GLBatch corner;
 	M3DVector3f bodenVertices[val];
 	M3DVector4f bodenColors[val];
 	int i = 0;
-	// Das Zentrum des Triangle_Fans ist im Ursprung
+
 	m3dLoadVector3(bodenVertices[i], 0 + offset_x, 0 + offset_y, 0 + offset_z);
 	m3dLoadVector4(bodenColors[i], 1, 0, 0, 1);
 	i++;
@@ -346,6 +208,11 @@ void CreateQuadrat(int x, int y, int z, int offset_x, int offset_y, int offset_z
 	corner.End();
 	corner.Draw();
 
+}
+
+void CreateCuboid(float width, float height, float length) {
+	CreateCuboidPart(width, height, length, 0, 0, 0);
+	CreateCuboidPart(-width, -height, -length, width, height, length);
 }
 
 void CreateSphere(float radius, int stacks, int sectors)
@@ -404,20 +271,64 @@ void CreateSphere(float radius, int stacks, int sectors)
 	}
 }
 
-void CreateScene(void) {
-
-	CreateCylinder(30, 10, 20);
-
+void DrawDumbbell(void) {
 	modelViewMatrix.PushMatrix();
-	modelViewMatrix.Translate(0, 0, 50);
+	modelViewMatrix.Rotate(90, 0, 1, 0);
+	modelViewMatrix.Translate(0, 0, -15);
 	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES,
 		transformPipeline.GetModelViewProjectionMatrix());
 
-	CreateSphere(10, 20, 20);
+	CreateCylinder(30, 3, 20);
+
+	CreateSphere(8, 20, 20);
+
+	modelViewMatrix.Translate(0, 0, 30);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES,
+		transformPipeline.GetModelViewProjectionMatrix());
+
+	CreateSphere(8, 20, 20);
 
 	modelViewMatrix.PopMatrix();
-
 }
+
+void DrawArmAndDumbbell(void) {
+	CreateCylinder(30, 4, 20);
+
+	modelViewMatrix.PushMatrix();
+	modelViewMatrix.Translate(0, 0, 30);
+	modelViewMatrix.Rotate(-40, 1, 0, 0);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES,
+		transformPipeline.GetModelViewProjectionMatrix());
+
+	CreateCylinder(30, 4, 20);
+
+	modelViewMatrix.Translate(0, 0, 30);
+
+	DrawDumbbell();
+
+	modelViewMatrix.PopMatrix();
+}
+
+void DrawBodybuilder(void) {
+	CreateCuboid(30, 60, 20);
+
+	modelViewMatrix.PushMatrix();
+	modelViewMatrix.Translate(0, 45, 0);
+	modelViewMatrix.Rotate(-10, 0, 1, 0);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES,
+		transformPipeline.GetModelViewProjectionMatrix());
+	DrawArmAndDumbbell();
+	modelViewMatrix.PopMatrix();
+
+	modelViewMatrix.PushMatrix();
+	modelViewMatrix.Translate(30, 45, 0);
+	modelViewMatrix.Rotate(10, 0, 1, 0);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES,
+		transformPipeline.GetModelViewProjectionMatrix());
+	DrawArmAndDumbbell();
+	modelViewMatrix.PopMatrix();
+}
+
 // Aufruf draw scene
 void RenderScene(void)
 {
@@ -453,8 +364,7 @@ void RenderScene(void)
 
 	
 	if (showQuader) {
-		CreateQuadrat(quaderX, quaderY, quaderZ, 0, 0, 0);
-		CreateQuadrat(-quaderX, -quaderY, -quaderZ, quaderX, quaderY, quaderZ);
+		CreateCuboid(quaderX, quaderY, quaderZ);
 	}
 	if (showCylinder) {
 		CreateCylinder(cylinderHeight, cylinderRadius, cylinderTesselation);
@@ -463,7 +373,7 @@ void RenderScene(void)
 		CreateSphere(sphereRadius, sphereStacks, sphereSectors);
 	}
 	if (showScene) {
-		CreateScene();
+		DrawBodybuilder();
 	}
 
 	//Auf fehler überprüfen
