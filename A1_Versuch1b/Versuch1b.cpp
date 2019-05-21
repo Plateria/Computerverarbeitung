@@ -212,7 +212,9 @@ void CreateCuboidPart(int x, int y, int z, int offset_x, int offset_y, int offse
 
 void CreateCuboid(float width, float height, float length) {
 	CreateCuboidPart(width, height, length, 0, 0, 0);
+	glFrontFace(GL_CCW);
 	CreateCuboidPart(-width, -height, -length, width, height, length);
+	glFrontFace(GL_CW);
 }
 
 void CreateSphere(float radius, int stacks, int sectors)
