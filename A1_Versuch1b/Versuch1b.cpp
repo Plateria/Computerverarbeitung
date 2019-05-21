@@ -175,7 +175,7 @@ void CreateCuboidPart(int x, int y, int z, int offset_x, int offset_y, int offse
 	i++;
 
 	m3dLoadVector3(bodenVertices[i], x + offset_x, 0 + offset_y, 0 + offset_z);
-	m3dLoadVector4(bodenColors[i], 1, 0.8, 0, 1);
+	m3dLoadVector4(bodenColors[i], 0, 0.8, 0, 1);
 	i++;
 
 	m3dLoadVector3(bodenVertices[i], x + offset_x, y + offset_y, 0 + offset_z);
@@ -183,7 +183,7 @@ void CreateCuboidPart(int x, int y, int z, int offset_x, int offset_y, int offse
 	i++;
 
 	m3dLoadVector3(bodenVertices[i], 0 + offset_x, y + offset_y, 0 + offset_z);
-	m3dLoadVector4(bodenColors[i], 1, 0.8, 0, 1);
+	m3dLoadVector4(bodenColors[i], 0, 0.8, 0, 1);
 	i++;
 
 	m3dLoadVector3(bodenVertices[i], 0 + offset_x, y + offset_y, z + offset_z);
@@ -191,7 +191,7 @@ void CreateCuboidPart(int x, int y, int z, int offset_x, int offset_y, int offse
 	i++;
 
 	m3dLoadVector3(bodenVertices[i], 0 + offset_x, 0 + offset_y, z + offset_z);
-	m3dLoadVector4(bodenColors[i], 1, 0.8, 0, 1);
+	m3dLoadVector4(bodenColors[i], 0, 0.8, 0, 1);
 	i++;
 
 	m3dLoadVector3(bodenVertices[i], x + offset_x, 0 + offset_y, z + offset_z);
@@ -199,7 +199,7 @@ void CreateCuboidPart(int x, int y, int z, int offset_x, int offset_y, int offse
 	i++;
 
 	m3dLoadVector3(bodenVertices[i], x + offset_x, 0 + offset_y, 0 + offset_z);
-	m3dLoadVector4(bodenColors[i], 1, 0.8, 0, 1);
+	m3dLoadVector4(bodenColors[i], 0, 0.8, 0, 1);
 	i++;
 
 	corner.Begin(GL_TRIANGLE_FAN, val);
