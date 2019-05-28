@@ -52,6 +52,10 @@ float quaderZ = 50;
 
 int position = 0;
 
+int deltaX;
+int deltaY;
+int deltaZ;
+
 //GUI
 TwBar *bar;
 void InitGUI()
@@ -321,7 +325,7 @@ void DrawArmAndDumbbell(void) {
 
 void DrawBodybuilder(void) {
 	CreateCuboid(30, 60, 20);
-
+	
 	modelViewMatrix.PushMatrix();
 	modelViewMatrix.Translate(0, 45, 0);
 	modelViewMatrix.Rotate(-10, 0, 1, 0);
@@ -373,8 +377,12 @@ void RenderScene(void)
 	else
 		glPolygonMode(GL_BACK, GL_FILL);
 
+	
+
 	// Speichere den matrix state und führe die Rotation durch
 	modelViewMatrix.PushMatrix();
+	modelViewMatrix.Translate(deltaX, -deltaY, deltaZ);
+	//modelViewMatrix.Rotate(position, 0, 1, 0);
 	M3DMatrix44f rot;
 	m3dQuatToRotationMatrix(rot, rotation);
 	modelViewMatrix.MultMatrix(rot);
@@ -424,9 +432,35 @@ void SetupRC()
 
 void SpecialKeys(int key, int x, int y)
 {
-	TwEventKeyboardGLUT(key, x, y);
+	switch (key) {
+	case GLUT_KEY_LEFT:
+		deltaX += 1;
+		break;
+	case GLUT_KEY_RIGHT:
+		deltaX -= 1;
+		break;
+	case GLUT_KEY_UP:
+		deltaY += 1;
+		break;
+	case GLUT_KEY_DOWN:
+		deltaY -= 1;
+		break;
+	default:
+		TwEventKeyboardGLUT(key, x, y);
+		break;
+	}
 	// Zeichne das Window neu
 	glutPostRedisplay();
+}
+
+void Mouse(int button, int state, int x, int y) {
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		deltaZ += 10;
+	}
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+		deltaZ -= 10;
+	}
+	TwEventMouseButtonGLUT(button, state, x, y);
 }
 
 
@@ -483,6 +517,7 @@ int main(int argc, char* argv[])
 
 	glutReshapeFunc(ChangeSize);
 	glutSpecialFunc(SpecialKeys);
+	glutMouseFunc(Mouse);
 	glutDisplayFunc(RenderScene);
 
 	TwInit(TW_OPENGL_CORE, NULL);
