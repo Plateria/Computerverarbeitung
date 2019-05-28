@@ -34,9 +34,9 @@ bool bOutline = false;
 bool bDepth = true;
 
 bool showCylinder = false;
-bool showSphere = true;
+bool showSphere = false;
 bool showQuader = false;
-bool showScene = false;
+bool showScene = true;
 
 float cylinderHeight = 60;
 float cylinderRadius = 15;
@@ -50,6 +50,7 @@ float quaderX = 50;
 float quaderY = 50;
 float quaderZ = 50;
 
+int position = 0;
 
 //GUI
 TwBar *bar;
@@ -276,7 +277,7 @@ void CreateSphere(float radius, int stacks, int sectors)
 void DrawDumbbell(void) {
 	modelViewMatrix.PushMatrix();
 	modelViewMatrix.Rotate(90, 0, 1, 0);
-	modelViewMatrix.Translate(0, 0, -15);
+	modelViewMatrix.Translate(0, 10 + 10 * sin(position / 100.0 * 2 * GL_PI), -15);
 	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES,
 		transformPipeline.GetModelViewProjectionMatrix());
 
@@ -294,14 +295,21 @@ void DrawDumbbell(void) {
 }
 
 void DrawArmAndDumbbell(void) {
+	modelViewMatrix.PushMatrix();
+	modelViewMatrix.Scale(1, 1.2 + 0.2 * sin(position / 100.0 * 2 * GL_PI), 1);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES,
+		transformPipeline.GetModelViewProjectionMatrix());
 	CreateCylinder(30, 4, 20);
+	modelViewMatrix.PopMatrix();
 
 	modelViewMatrix.PushMatrix();
 	modelViewMatrix.Translate(0, 0, 30);
-	modelViewMatrix.Rotate(-40, 1, 0, 0);
+	modelViewMatrix.Rotate(-20 - 20 * sin(position/100.0 * 2 * GL_PI), 1, 0, 0);
+	modelViewMatrix.Scale(1, 1.1 + 0.1 * sin(position / 100.0 * 2 * GL_PI), 1);
 	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES,
 		transformPipeline.GetModelViewProjectionMatrix());
 
+	CreateSphere(4.5, 20, 20);
 	CreateCylinder(30, 4, 20);
 
 	modelViewMatrix.Translate(0, 0, 30);
@@ -317,6 +325,7 @@ void DrawBodybuilder(void) {
 	modelViewMatrix.PushMatrix();
 	modelViewMatrix.Translate(0, 45, 0);
 	modelViewMatrix.Rotate(-10, 0, 1, 0);
+	modelViewMatrix.Rotate(20 + -20 * sin(position / 100.0 * 2 * GL_PI), 1, 0, 0);
 	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES,
 		transformPipeline.GetModelViewProjectionMatrix());
 	DrawArmAndDumbbell();
@@ -325,10 +334,19 @@ void DrawBodybuilder(void) {
 	modelViewMatrix.PushMatrix();
 	modelViewMatrix.Translate(30, 45, 0);
 	modelViewMatrix.Rotate(10, 0, 1, 0);
+	modelViewMatrix.Rotate(20 + -20 * sin(position / 100.0 * 2 * GL_PI), 1, 0, 0);
 	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES,
 		transformPipeline.GetModelViewProjectionMatrix());
 	DrawArmAndDumbbell();
 	modelViewMatrix.PopMatrix();
+}
+
+void Loop(int value) {
+	if (value >= 100) {
+		value -= 100;
+	}
+	position = value;
+	glutTimerFunc(1000 / 60.0, Loop, value + 1);
 }
 
 // Aufruf draw scene
@@ -469,7 +487,9 @@ int main(int argc, char* argv[])
 
 	TwInit(TW_OPENGL_CORE, NULL);
 	SetupRC();
+	glutTimerFunc(1000 / 60.0, Loop, 0);
 	glutMainLoop();
+
 
 	return 0;
 }
