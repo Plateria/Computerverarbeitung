@@ -52,9 +52,35 @@ float quaderZ = 50;
 
 int position = 0;
 
-int deltaX;
-int deltaY;
-int deltaZ;
+bool perspective = false;
+
+GLFrame cameraFrame;
+int mouseX;
+int mouseY;
+
+void ChangeSize(int x, int y);
+
+//Set Funktion für GUI, wird aufgerufen wenn Variable im GUI geändert wird
+void TW_CALL SetPerspective(const void* value, void* clientData)
+{
+	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
+	const bool* boolptr = static_cast<const bool*>(value);
+
+	//Setzen der Variable auf neuen Wert
+	perspective = *boolptr;
+
+	ChangeSize(800, 600);
+}
+
+//Get Funktion für GUI, damit GUI Variablen Wert zum anzeigen erhält
+void TW_CALL GetPerspective(void* value, void* clientData)
+{
+	//Pointer auf gesetzten Typ casten (der Typ der bei TwAddVarCB angegeben wurde)
+	bool* boolptr = static_cast<bool*>(value);
+
+	//Variablen Wert and GUI weiterreichen
+	*boolptr = perspective;
+}
 
 //GUI
 TwBar *bar;
@@ -80,6 +106,7 @@ void InitGUI()
 	TwAddVarRW(bar, "Quader height", TW_TYPE_FLOAT, &quaderY, "");
 	TwAddVarRW(bar, "Quader length", TW_TYPE_FLOAT, &quaderZ, "");
 	TwAddVarRW(bar, "Show Scene?", TW_TYPE_BOOLCPP, &showScene, "");
+	TwAddVarCB(bar, "Perspective?", TW_TYPE_BOOLCPP, SetPerspective, GetPerspective, NULL, "");
 }
 
 void CreateCylinder(float height, float radius, int tesselation)
@@ -281,7 +308,13 @@ void CreateSphere(float radius, int stacks, int sectors)
 void DrawDumbbell(void) {
 	modelViewMatrix.PushMatrix();
 	modelViewMatrix.Rotate(90, 0, 1, 0);
-	modelViewMatrix.Translate(0, 10 + 10 * sin(position / 100.0 * 2 * GL_PI), -15);
+	if (position < 50) {
+		modelViewMatrix.Rotate(50 * sin(position / 100.0 * 2 * GL_PI), 0, 0, 1);
+		modelViewMatrix.Translate(0, 20 * sin(position / 100.0 * 2 * GL_PI), -15);
+	}
+	else {
+		modelViewMatrix.Translate(0, 0, -15);
+	}
 	shaderManager.UseStockShader(GLT_SHADER_FLAT_ATTRIBUTES,
 		transformPipeline.GetModelViewProjectionMatrix());
 
@@ -377,12 +410,18 @@ void RenderScene(void)
 	else
 		glPolygonMode(GL_BACK, GL_FILL);
 
-	
 
 	// Speichere den matrix state und führe die Rotation durch
 	modelViewMatrix.PushMatrix();
-	modelViewMatrix.Translate(deltaX, -deltaY, deltaZ);
-	//modelViewMatrix.Rotate(position, 0, 1, 0);
+
+	if (perspective) {
+		modelViewMatrix.Translate(0, 0, -100);
+	}
+
+	M3DMatrix44f m;
+	cameraFrame.GetCameraMatrix(m);
+	modelViewMatrix.MultMatrix(m);
+
 	M3DMatrix44f rot;
 	m3dQuatToRotationMatrix(rot, rotation);
 	modelViewMatrix.MultMatrix(rot);
@@ -434,16 +473,16 @@ void SpecialKeys(int key, int x, int y)
 {
 	switch (key) {
 	case GLUT_KEY_LEFT:
-		deltaX += 1;
+		cameraFrame.MoveRight(1);
 		break;
 	case GLUT_KEY_RIGHT:
-		deltaX -= 1;
+		cameraFrame.MoveRight(-1);
 		break;
 	case GLUT_KEY_UP:
-		deltaY += 1;
+		cameraFrame.MoveUp(1);
 		break;
 	case GLUT_KEY_DOWN:
-		deltaY -= 1;
+		cameraFrame.MoveUp(-1);
 		break;
 	default:
 		TwEventKeyboardGLUT(key, x, y);
@@ -455,12 +494,23 @@ void SpecialKeys(int key, int x, int y)
 
 void Mouse(int button, int state, int x, int y) {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		deltaZ += 10;
+		cameraFrame.MoveForward(10);
+		mouseX = x;
+		mouseY = y;
 	}
 	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
-		deltaZ -= 10;
+		cameraFrame.MoveForward(-10);
+		mouseX = x;
+		mouseY = y;
 	}
 	TwEventMouseButtonGLUT(button, state, x, y);
+}
+
+void Motion(int x, int y) {
+	cameraFrame.RotateWorld((mouseX - x) * 0.01, 0, 1, 0);
+	cameraFrame.RotateWorld((mouseY - y) * 0.01, 1, 0, 0);
+	mouseX = x;
+	mouseY = y;
 }
 
 
@@ -476,11 +526,15 @@ void ChangeSize(int w, int h)
 	// Ruecksetzung des Projection matrix stack
 	projectionMatrix.LoadIdentity();
 
-	// Definiere das viewing volume (left, right, bottom, top, near, far)
-	if (w <= h)
-		viewFrustum.SetOrthographic(-nRange, nRange, -nRange * float(h) / float(w), nRange * float(h) / float(w), -nRange, nRange);
-	else
-		viewFrustum.SetOrthographic(-nRange * float(w) / float(h), nRange * float(w) / float(h), -nRange, nRange, -nRange, nRange);
+	if (perspective) {
+		viewFrustum.SetPerspective(90, float(w) / float(h), 20, 200);
+	} else {
+		// Definiere das viewing volume (left, right, bottom, top, near, far)
+		if (w <= h)
+			viewFrustum.SetOrthographic(-nRange, nRange, -nRange * float(h) / float(w), nRange * float(h) / float(w), -nRange, nRange);
+		else
+			viewFrustum.SetOrthographic(-nRange * float(w) / float(h), nRange * float(w) / float(h), -nRange, nRange, -nRange, nRange);
+	}
 	projectionMatrix.LoadMatrix(viewFrustum.GetProjectionMatrix());
 	// Ruecksetzung des Model view matrix stack
 	modelViewMatrix.LoadIdentity();
@@ -518,6 +572,7 @@ int main(int argc, char* argv[])
 	glutReshapeFunc(ChangeSize);
 	glutSpecialFunc(SpecialKeys);
 	glutMouseFunc(Mouse);
+	glutMotionFunc(Motion);
 	glutDisplayFunc(RenderScene);
 
 	TwInit(TW_OPENGL_CORE, NULL);
