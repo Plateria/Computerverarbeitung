@@ -414,13 +414,14 @@ void RenderScene(void)
 	// Speichere den matrix state und führe die Rotation durch
 	modelViewMatrix.PushMatrix();
 
-	if (perspective) {
-		modelViewMatrix.Translate(0, 0, -100);
-	}
 
 	M3DMatrix44f m;
 	cameraFrame.GetCameraMatrix(m);
 	modelViewMatrix.MultMatrix(m);
+
+	if (perspective) {
+		modelViewMatrix.Translate(0, 0, -100);
+	}
 
 	M3DMatrix44f rot;
 	m3dQuatToRotationMatrix(rot, rotation);
