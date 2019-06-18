@@ -16,11 +16,14 @@
 #include <GL/freeglut.h>
 #include <AntTweakBar.h>
 
+// Definition der Kreiszahl 
+#define GL_PI 3.1415f
+
 GLMatrixStack modelViewMatrix;
 GLMatrixStack projectionMatrix;
 GLGeometryTransform transformPipeline;
 GLFrustum viewFrustum;
-GLBatch geometryBatch;
+//GLBatch geometryBatch;
 GLuint shaders;
 
 /// View space light position
@@ -38,6 +41,8 @@ float mat_specular[4] = { 0.8, 0.8, 0.8, 1.0 };
 float specular_power = 10;
 // Rotationsgroessen
 float rotation[] = { 0, 0, 0, 0 };
+
+int thresholdAngle = 100;
 //GUI
 TwBar *bar;
 
@@ -48,22 +53,91 @@ void InitGUI()
 	TwAddVarRW(bar, "Model Rotation", TW_TYPE_QUAT4F, &rotation, "");
 	TwAddVarRW(bar, "Light Position", TW_TYPE_DIR3F, &light_pos, "group=Light axisx=-x axisy=-y axisz=-z");
 	//Hier weitere GUI Variablen anlegen. Für Farbe z.B. den Typ TW_TYPE_COLOR4F benutzen
+	TwAddVarRW(bar, "Threshold Angle", TW_TYPE_INT32, &thresholdAngle, "");
 }
 void CreateGeometry()
 {
+	float radius = 0.5f;
+	float height = 2.0f;
+
+	int steps = 8;
+	float increment = (2.0f * GL_PI) / steps;
+
 	//Dreieck
-	geometryBatch.Begin(GL_TRIANGLES, 3);
+	GLBatch geometryBatch;
+	geometryBatch.Begin(GL_TRIANGLES, 3 * 32);
 
-	geometryBatch.Normal3f(0, 0, 1);
-	geometryBatch.Vertex3f(-1, -1, 0);
+	GLBatch line;
+	line.Begin(GL_LINES, 2);
 
-	geometryBatch.Normal3f(0, 0, 1);
-	geometryBatch.Vertex3f(0, 1, 0);
 
-	geometryBatch.Normal3f(0, 0, 1);
-	geometryBatch.Vertex3f(1, -1, 0);
+	for (int step = 0; step < steps; step++) {
+		float angle = step * increment;
+		float x = radius * sin(angle);
+		float y = radius * cos(angle);
+		float xn = radius * sin(angle + increment);
+		float yn = radius * cos(angle + increment);
+
+		float top[3] = { 0,0,0 };
+		float bottom[3] = { 0,0,0 };
+		float length = sqrt(pow(x, 2) + pow(y, 2));
+		float lengthNext = sqrt(pow(xn, 2) + pow(yn, 2));
+		float mantle[3] = { x/length, y/length, 0 };
+		float mantleNext[3] = { xn/lengthNext, yn/lengthNext, 0 };
+
+		if (thresholdAngle < 45) {
+			top[2] = 1;
+			bottom[2] = -1;
+			float tmp[3] = { (mantle[0] + mantleNext[0]) / 2, (mantle[1] + mantleNext[1]) / 2, 0 };
+			mantle[0] = tmp[0];
+			mantle[1] = tmp[1];
+			mantleNext[0] = tmp[0];
+			mantleNext[1] = tmp[1];
+		}
+		else if (thresholdAngle < 90) {
+			top[2] = 1;
+			bottom[2] = -1;
+
+		}
+		else {
+		}
+
+		line.Vertex3f(0, 0, height/2);
+		line.Vertex3f(0, 0, (height/2)+top[2]);
+		geometryBatch.Normal3f(0, 0, 1);
+		geometryBatch.Vertex3f(0, 0, height/2);
+
+		/*line.Vertex3f(x, y, height / 2);
+		line.Vertex3f(x + top[0], y + top[1], (height / 2) + top[2]);*/
+		geometryBatch.Normal3f(top[0], top[1], top[2]);
+		geometryBatch.Vertex3f(x, y, height/2);
+		geometryBatch.Normal3f(top[0], top[1], top[2]);
+		geometryBatch.Vertex3f(xn, yn, height/2);
+
+		geometryBatch.Normal3f(mantle[0], mantle[1], mantle[2]);
+		geometryBatch.Vertex3f(x, y, height / 2);
+		geometryBatch.Normal3f(mantle[0], mantle[1], mantle[2]);
+		geometryBatch.Vertex3f(x, y, -height / 2);
+		geometryBatch.Normal3f(mantleNext[0], mantleNext[1], mantleNext[2]);
+		geometryBatch.Vertex3f(xn, yn, -height / 2);
+
+		geometryBatch.Normal3f(mantle[0], mantle[1], mantle[2]);
+		geometryBatch.Vertex3f(x, y, height / 2);
+		geometryBatch.Normal3f(mantleNext[0], mantleNext[1], mantleNext[2]);
+		geometryBatch.Vertex3f(xn, yn, -height / 2);
+		geometryBatch.Normal3f(mantleNext[0], mantleNext[1], mantleNext[2]);
+		geometryBatch.Vertex3f(xn, yn, height / 2);
+
+		geometryBatch.Normal3f(0, 0, -1);
+		geometryBatch.Vertex3f(0, 0, -height / 2);
+		geometryBatch.Normal3f(bottom[0], bottom[1], bottom[2]);
+		geometryBatch.Vertex3f(x, y, -height / 2);
+		geometryBatch.Normal3f(bottom[0], bottom[1], bottom[2]);
+		geometryBatch.Vertex3f(xn, yn, -height / 2);
+	}
 
 	geometryBatch.End();
+	line.End();
 
 	//Shader Programme laden. Die letzen Argumente geben die Shader-Attribute an. Hier wird Vertex und Normale gebraucht.
 	shaders = gltLoadShaderPairWithAttributes("VertexShader.glsl", "FragmentShader.glsl", 2,
@@ -71,6 +145,8 @@ void CreateGeometry()
 		GLT_ATTRIBUTE_NORMAL, "vNormal");
 
 	gltCheckErrors(shaders);
+	geometryBatch.Draw();
+	line.Draw();
 }
 
 // Aufruf draw scene
@@ -107,7 +183,9 @@ void RenderScene(void)
 	glUniform4fv(glGetUniformLocation(shaders, "mat_diffuse"), 1, mat_diffuse);
 	glUniform4fv(glGetUniformLocation(shaders, "mat_specular"), 1, mat_specular);
 	//Zeichne Model
-	geometryBatch.Draw();
+	CreateGeometry();
+
+	//geometryBatch.Draw();
 
 	// Hole die im Stack gespeicherten Transformationsmatrizen wieder zurück
 	modelViewMatrix.PopMatrix();
@@ -131,7 +209,7 @@ void SetupRC()
 
 	transformPipeline.SetMatrixStacks(modelViewMatrix, projectionMatrix);
 	//erzeuge die geometrie
-	CreateGeometry();
+	//CreateGeometry();
 	InitGUI();
 }
 
