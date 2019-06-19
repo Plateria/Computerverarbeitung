@@ -42,7 +42,8 @@ float specular_power = 10;
 // Rotationsgroessen
 float rotation[] = { 0, 0, 0, 0 };
 
-int thresholdAngle = 100;
+int thresholdAngle = 0;
+bool showNormalVectors = true;
 //GUI
 TwBar *bar;
 
@@ -54,7 +55,27 @@ void InitGUI()
 	TwAddVarRW(bar, "Light Position", TW_TYPE_DIR3F, &light_pos, "group=Light axisx=-x axisy=-y axisz=-z");
 	//Hier weitere GUI Variablen anlegen. Für Farbe z.B. den Typ TW_TYPE_COLOR4F benutzen
 	TwAddVarRW(bar, "Threshold Angle", TW_TYPE_INT32, &thresholdAngle, "");
+	TwAddVarRW(bar, "Show Normal Vectors", TW_TYPE_BOOLCPP, &showNormalVectors, "");
 }
+
+void DrawNormalVectors(M3DVector3f* cylinderVertices, M3DVector3f* cylinderNormals, int length) {
+	M3DVector3f* lineVertices = new M3DVector3f[length * 2];
+
+	for (int i = 0; i < length; i++) {
+		m3dLoadVector3(lineVertices[2 * i], cylinderVertices[i][0], cylinderVertices[i][1], cylinderVertices[i][2]);
+		m3dLoadVector3(lineVertices[2 * i + 1], cylinderVertices[i][0] + cylinderNormals[i][0],
+			cylinderVertices[i][1] + cylinderNormals[i][1], cylinderVertices[i][2] + cylinderNormals[i][2]);
+	}
+
+	GLBatch lines;
+	lines.Begin(GL_LINES, length * 2);
+	lines.CopyVertexData3f(lineVertices);
+	lines.End();
+	lines.Draw();
+
+	delete[] lineVertices;
+}
+
 void CreateGeometry()
 {
 	float radius = 0.5f;
@@ -63,13 +84,8 @@ void CreateGeometry()
 	int steps = 8;
 	float increment = (2.0f * GL_PI) / steps;
 
-	//Dreieck
-	GLBatch geometryBatch;
-	geometryBatch.Begin(GL_TRIANGLES, 3 * 32);
-
-	GLBatch line;
-	line.Begin(GL_LINES, 2);
-
+	M3DVector3f* cylinderVertices = new M3DVector3f[steps * 4 * 3];
+	M3DVector3f* cylinderNormals = new M3DVector3f[steps * 4 * 3];
 
 	for (int step = 0; step < steps; step++) {
 		float angle = step * increment;
@@ -78,75 +94,99 @@ void CreateGeometry()
 		float xn = radius * sin(angle + increment);
 		float yn = radius * cos(angle + increment);
 
-		float top[3] = { 0,0,0 };
-		float bottom[3] = { 0,0,0 };
+		float topX = 0;
+		float topY = 0;
+		float topZ = 1;
+		float bottomX = 0;
+		float bottomY = 0;
+		float bottomZ = -1;
 		float length = sqrt(pow(x, 2) + pow(y, 2));
 		float lengthNext = sqrt(pow(xn, 2) + pow(yn, 2));
-		float mantle[3] = { x/length, y/length, 0 };
-		float mantleNext[3] = { xn/lengthNext, yn/lengthNext, 0 };
+		float mantleX = x / length;
+		float mantleY = y / length;
+		float mantleZ = 0;
+		float mantleNextX = xn / lengthNext;
+		float mantleNextY = yn / lengthNext;
+		float mantleNextZ = 0;
 
-		if (thresholdAngle < 45) {
-			top[2] = 1;
-			bottom[2] = -1;
-			float tmp[3] = { (mantle[0] + mantleNext[0]) / 2, (mantle[1] + mantleNext[1]) / 2, 0 };
-			mantle[0] = tmp[0];
-			mantle[1] = tmp[1];
-			mantleNext[0] = tmp[0];
-			mantleNext[1] = tmp[1];
+		if (thresholdAngle <= 45) {
+			float tmpX = (mantleX + mantleNextX) / 2;
+			float tmpY = (mantleY + mantleNextY) / 2;
+			mantleX = tmpX;
+			mantleY = tmpY;
+			mantleNextX = tmpX;
+			mantleNextY = tmpY;
 		}
-		else if (thresholdAngle < 90) {
-			top[2] = 1;
-			bottom[2] = -1;
+		else if (thresholdAngle > 90) {
+			float tmpLength = sqrt(pow(mantleX, 2) + pow(mantleY, 2) + pow(0.5, 2));
+			topX = mantleX / tmpLength;
+			topY = mantleY / tmpLength;
+			topZ = 0.5 / tmpLength;
+			bottomX = mantleX / tmpLength;
+			bottomY = mantleY / tmpLength;
+			bottomZ = -0.5 / tmpLength;
+			mantleX = mantleX / tmpLength;
+			mantleY = mantleY / tmpLength;
+			mantleZ = 0.5 / tmpLength;
+			float tmpNextLength = sqrt(pow(mantleNextX, 2) + pow(mantleNextY, 2) + pow(0.5, 2));
+			mantleNextX = mantleNextX / tmpNextLength;
+			mantleNextY = mantleNextY / tmpNextLength;
+			mantleNextZ = 0.5 / tmpNextLength;
+		}
 
+		m3dLoadVector3(cylinderVertices[step * 12], 0, 0, height / 2);
+		m3dLoadVector3(cylinderNormals[step * 12], 0, 0, 1);
+
+		m3dLoadVector3(cylinderVertices[step * 12 + 1], x, y, height / 2);
+		m3dLoadVector3(cylinderNormals[step * 12 + 1], topX, topY, topZ);
+		m3dLoadVector3(cylinderVertices[step * 12 + 2], xn, yn, height / 2);
+		if (thresholdAngle > 90) {
+			m3dLoadVector3(cylinderNormals[step * 12 + 2], mantleNextX, mantleNextY, mantleNextZ);
 		}
 		else {
+			m3dLoadVector3(cylinderNormals[step * 12 + 2], topX, topY, topZ);
 		}
 
-		line.Vertex3f(0, 0, height/2);
-		line.Vertex3f(0, 0, (height/2)+top[2]);
-		geometryBatch.Normal3f(0, 0, 1);
-		geometryBatch.Vertex3f(0, 0, height/2);
+		m3dLoadVector3(cylinderVertices[step * 12 + 3], x, y, height / 2);
+		m3dLoadVector3(cylinderNormals[step * 12 + 3], mantleX, mantleY, mantleZ);
+		m3dLoadVector3(cylinderVertices[step * 12 + 4], x, y, -height / 2);
+		m3dLoadVector3(cylinderNormals[step * 12 + 4], mantleX, mantleY, -mantleZ);
+		m3dLoadVector3(cylinderVertices[step * 12 + 5], xn, yn, -height / 2);
+		m3dLoadVector3(cylinderNormals[step * 12 + 5], mantleNextX, mantleNextY, -mantleNextZ);
 
-		/*line.Vertex3f(x, y, height / 2);
-		line.Vertex3f(x + top[0], y + top[1], (height / 2) + top[2]);*/
-		geometryBatch.Normal3f(top[0], top[1], top[2]);
-		geometryBatch.Vertex3f(x, y, height/2);
-		geometryBatch.Normal3f(top[0], top[1], top[2]);
-		geometryBatch.Vertex3f(xn, yn, height/2);
+		m3dLoadVector3(cylinderVertices[step * 12 + 6], x, y, height / 2);
+		m3dLoadVector3(cylinderNormals[step * 12 + 6], mantleX, mantleY, mantleZ);
+		m3dLoadVector3(cylinderVertices[step * 12 + 7], xn, yn, -height / 2);
+		m3dLoadVector3(cylinderNormals[step * 12 + 7], mantleNextX, mantleNextY, -mantleNextZ);
+		m3dLoadVector3(cylinderVertices[step * 12 + 8], xn, yn, height / 2);
+		m3dLoadVector3(cylinderNormals[step * 12 + 8], mantleNextX, mantleNextY, mantleNextZ);
 
-		geometryBatch.Normal3f(mantle[0], mantle[1], mantle[2]);
-		geometryBatch.Vertex3f(x, y, height / 2);
-		geometryBatch.Normal3f(mantle[0], mantle[1], mantle[2]);
-		geometryBatch.Vertex3f(x, y, -height / 2);
-		geometryBatch.Normal3f(mantleNext[0], mantleNext[1], mantleNext[2]);
-		geometryBatch.Vertex3f(xn, yn, -height / 2);
-
-		geometryBatch.Normal3f(mantle[0], mantle[1], mantle[2]);
-		geometryBatch.Vertex3f(x, y, height / 2);
-		geometryBatch.Normal3f(mantleNext[0], mantleNext[1], mantleNext[2]);
-		geometryBatch.Vertex3f(xn, yn, -height / 2);
-		geometryBatch.Normal3f(mantleNext[0], mantleNext[1], mantleNext[2]);
-		geometryBatch.Vertex3f(xn, yn, height / 2);
-
-		geometryBatch.Normal3f(0, 0, -1);
-		geometryBatch.Vertex3f(0, 0, -height / 2);
-		geometryBatch.Normal3f(bottom[0], bottom[1], bottom[2]);
-		geometryBatch.Vertex3f(x, y, -height / 2);
-		geometryBatch.Normal3f(bottom[0], bottom[1], bottom[2]);
-		geometryBatch.Vertex3f(xn, yn, -height / 2);
+		m3dLoadVector3(cylinderVertices[step * 12 + 9], 0, 0, -height / 2);
+		m3dLoadVector3(cylinderNormals[step * 12 + 9], 0, 0, -1);
+		m3dLoadVector3(cylinderVertices[step * 12 + 10], x, y, -height / 2);
+		m3dLoadVector3(cylinderNormals[step * 12 + 10], bottomX, bottomY, bottomZ);
+		m3dLoadVector3(cylinderVertices[step * 12 + 11], xn, yn, -height / 2);
+		if (thresholdAngle > 90) {
+			m3dLoadVector3(cylinderNormals[step * 12 + 11], mantleNextX, mantleNextY, -mantleNextZ);
+		}
+		else {
+			m3dLoadVector3(cylinderNormals[step * 12 + 11], bottomX, bottomY, bottomZ);
+		}
 	}
 
+	GLBatch geometryBatch;
+	geometryBatch.Begin(GL_TRIANGLES, steps * 4 * 3);
+	geometryBatch.CopyVertexData3f(cylinderVertices);
+	geometryBatch.CopyNormalDataf(cylinderNormals);
 	geometryBatch.End();
-	line.End();
-
-	//Shader Programme laden. Die letzen Argumente geben die Shader-Attribute an. Hier wird Vertex und Normale gebraucht.
-	shaders = gltLoadShaderPairWithAttributes("VertexShader.glsl", "FragmentShader.glsl", 2,
-		GLT_ATTRIBUTE_VERTEX, "vVertex",
-		GLT_ATTRIBUTE_NORMAL, "vNormal");
-
-	gltCheckErrors(shaders);
 	geometryBatch.Draw();
-	line.Draw();
+
+	if (showNormalVectors) {
+		DrawNormalVectors(cylinderVertices, cylinderNormals, steps * 4 * 3);
+	}
+
+	delete[] cylinderVertices;
+	delete[] cylinderNormals;
 }
 
 // Aufruf draw scene
@@ -210,6 +250,11 @@ void SetupRC()
 	transformPipeline.SetMatrixStacks(modelViewMatrix, projectionMatrix);
 	//erzeuge die geometrie
 	//CreateGeometry();
+	shaders = gltLoadShaderPairWithAttributes("VertexShader.glsl", "FragmentShader.glsl", 2,
+		GLT_ATTRIBUTE_VERTEX, "vVertex",
+		GLT_ATTRIBUTE_NORMAL, "vNormal");
+
+	gltCheckErrors(shaders);
 	InitGUI();
 }
 
