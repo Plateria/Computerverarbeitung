@@ -53,6 +53,13 @@ void InitGUI()
 	TwDefine(" TweakBar size='200 400'");
 	TwAddVarRW(bar, "Model Rotation", TW_TYPE_QUAT4F, &rotation, "");
 	TwAddVarRW(bar, "Light Position", TW_TYPE_DIR3F, &light_pos, "group=Light axisx=-x axisy=-y axisz=-z");
+	TwAddVarRW(bar, "Light Ambient", TW_TYPE_COLOR4F, &light_ambient, "group=Light");
+	TwAddVarRW(bar, "Light Diffuse", TW_TYPE_COLOR4F, &light_diffuse, "group=Light");
+	TwAddVarRW(bar, "Light Specular", TW_TYPE_COLOR4F, &light_specular, "group=Light");
+	TwAddVarRW(bar, "Material Emissive", TW_TYPE_COLOR4F, &mat_emissive, "group=Material");
+	TwAddVarRW(bar, "Material Ambient", TW_TYPE_COLOR4F, &mat_ambient, "group=Material");
+	TwAddVarRW(bar, "Material Diffuse", TW_TYPE_COLOR4F, &mat_diffuse, "group=Material");
+	TwAddVarRW(bar, "Material Specular", TW_TYPE_COLOR4F, &mat_specular, "group=Material");
 	//Hier weitere GUI Variablen anlegen. Für Farbe z.B. den Typ TW_TYPE_COLOR4F benutzen
 	TwAddVarRW(bar, "Threshold Angle", TW_TYPE_INT32, &thresholdAngle, "");
 	TwAddVarRW(bar, "Show Normal Vectors", TW_TYPE_BOOLCPP, &showNormalVectors, "");
